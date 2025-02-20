@@ -1,5 +1,6 @@
 import codecs
 import os
+import platform
 import time
 from datetime import datetime
 from time import sleep
@@ -14,8 +15,11 @@ import random
 
 from selenium import webdriver
 from selenium.webdriver import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 # Function to write logs
 def write_log(testcase_name,pass_list, fail_list, log_file_name):
@@ -95,15 +99,20 @@ def write_result_report(testcase_name, result, report_file_name):
     dfread = pd.read_excel(log_file_path, sheet_name='Sound Config')
     print(dfread)
 
-# Function search link
+#Function click by id
+def click_by_id(driver, id):
+    element = driver.find_element(By.ID, id)
+    print('display', element.is_displayed())
+    element.click()
+
+#Function connect chrome
 def link_search(link):
-    # Đường dẫn tới Edge WebDriver đã tải về
-    edge_driver_path = "C:/msedgedriver.exe"
+    # Đường dẫn tới Chrome WebDriver đã tải về
+    chrome_driver_path = "chromedriver.exe"
+    # Khởi tạo dịch vụ Chrome WebDriver
+    service = Service(executable_path=chrome_driver_path)
 
-    # Khởi tạo dịch vụ Edge WebDriver
-    service = Service(executable_path=edge_driver_path)
-
-    # Cấu hình các tùy chọn cho Edge
+    # Cấu hình các tùy chọn cho Chrome
 
     # Danh sách User-Agent
     user_agents = [
@@ -112,25 +121,67 @@ def link_search(link):
         # Thêm nhiều User-Agent khác nếu cần
     ]
 
-    options = webdriver.EdgeOptions()
+    options = webdriver.ChromeOptions()
+    options.add_argument("user-data-dir=C:\\Users\\NST\\AppData\\Local\\Google\\Chrome\\User Data\\Default")
+    options.add_argument("--start-maximized")
+    options.add_argument("--enable-features=EnhancedProtection")
     options.add_argument(f"user-agent={random.choice(user_agents)}")
 
-    # Khởi tạo trình điều khiển (driver) cho Edge
-    driver = webdriver.Edge(service=service, options=options)
+    # Khởi tạo trình điều khiển (driver) cho Chrome
+    driver = webdriver.Chrome(service=service, options=options)
 
     # Mở trang web Google
     driver.get(f"{link}")
 
     return driver
 
-#Function click by id
-def click_by_id(driver, id):
-    element = driver.find_element(By.ID, id)
-    print('display', element.is_displayed())
-    element.click()
-
 #Function click by Xpath
 def click_by_xpath(driver, xpath):
     element = driver.find_element(By.XPATH, xpath)
     print('display', element.is_displayed())
     element.click()
+
+# Function get folder
+def get_download_folder():
+    if platform.system() == "Windows":
+        download_folder = os.path.join(os.getenv('USERPROFILE'), 'Downloads')
+    elif platform.system() == "Darwin":  # macOS
+        download_folder = os.path.join(os.getenv('HOME'), 'Downloads')
+    else:  # Linux and other Unix-like systems
+        download_folder = os.path.join(os.getenv('HOME'), 'Downloads')
+    return download_folder
+
+# Function download app by link
+def download_by_link(link):
+    # Tạo tùy chọn cho Chrome
+    # chrome_options = webdriver.ChromeOptions()
+    chrome_options = Options()
+    chrome_options.add_argument("--start-maximized")
+    # Cấu hình bỏ qua xác nhận người dùng, tự động down load về folder down load
+    prefs = {"download.default_directory": "Downloads",
+             "download.prompt_for_download": False,  # Chrome sẽ không hiện cửa sổ xác nhận trước khi tải xuống tệp.
+             "profile.default_content_setting_values.automatic_downloads": 1,
+             # cho phép tải xuống tự động mà không bị chặn.
+             "safebrowsing.enabled": True}  # kích hoạt tính năng Bảo mật An toàn (Safe Browsing) của Chrome
+    chrome_options.add_experimental_option("prefs", prefs)
+
+    # Khởi tạo trình điều khiển cho Chrome
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    # Mở một trang web
+    driver.get(f'{link}')
+    return driver
+
+# Run file exe
+# Kiểm tra lại xem tệp đã tồn tại chưa
+def run_file_exe(file_path):
+    if os.path.isfile(file_path):
+        print('Tệp đã được tải xuống. Đang chạy tệp...')
+        if platform.system() == "Windows":
+            subprocess.run([file_path], shell=True)
+        elif platform.system() == "Darwin":
+            subprocess.run(["open", file_path])
+        else:
+            subprocess.run(["xdg-open", file_path])
+    else:
+        print('Tệp chưa được tải xuống thành công.')

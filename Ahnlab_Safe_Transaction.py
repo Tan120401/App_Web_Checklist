@@ -1,32 +1,28 @@
-import random
+import os
+import platform
+import subprocess
 from time import sleep
-from selenium import webdriver
-from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.edge.service import Service
 
-from common_lib import link_search, click_by_id, click_by_xpath
+from common_lib import download_by_link, get_download_folder
 
-driver = link_search('https://www.shinhan.com')
+# Lấy thông tin thư mục tải xuống mặc định
+download_directory = get_download_folder()
 
-sleep(30)
+# Đường dẫn đến tệp thực thi
+file_path = os.path.join(download_directory, 'GOMAUDIOGLOBALSETUP_NEW.EXE')
 
-#Click login btn
-click_by_id(driver, 'btn_login')
-sleep(25)
+if not os.path.isfile(file_path):
+    download_by_link('https://cdn2.gomlab.com/gretech/audio/GOMAUDIOGLOBALSETUP_NEW.EXE')
+    sleep(20)
 
-# Click login btn
-click_by_id(driver, 'install_all')
-sleep(15)
-
-click_by_xpath(driver, '//*[@id="install_all"]')
-sleep(15)
-
-#Click login btn
-click_by_id(driver, 'anc_astxInstalledForWin')
-sleep(15)
-
-
-
-
-
+# Kiểm tra lại xem tệp đã tồn tại chưa
+if os.path.isfile(file_path):
+    print('Tệp đã được tải xuống. Đang chạy tệp...')
+    if platform.system() == "Windows":
+        subprocess.run([file_path], shell=True)
+    elif platform.system() == "Darwin":
+        subprocess.run(["open", file_path])
+    else:
+        subprocess.run(["xdg-open", file_path])
+else:
+    print('Tệp chưa được tải xuống thành công.')
