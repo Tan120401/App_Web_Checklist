@@ -1,29 +1,18 @@
 import os
+import platform
+import subprocess
 from time import sleep
 
-from common_lib import download_by_link, get_download_folder, run_file_exe, click_by_xpath
+from common_lib import download_by_link, get_download_folder, run_file_exe
 
 # Lấy thông tin thư mục tải xuống mặc định
 download_directory = get_download_folder()
 
-# Đường dẫn đến tệp thực thi GOMAUDIOGLOBALSETUP_NEW.EXE
+# Đường dẫn đến tệp thực thi
 file_path = os.path.join(download_directory, 'DropboxInstaller.exe')
 
 if not os.path.isfile(file_path):
-    driver = download_by_link('https://www.dropbox.com/install')
-    sleep(30)
+    download_by_link('https://dl-web.dropbox.com/installer?arch=x86_64&authenticode_sign=True&build_no=218.4.4348&juno=True&juno_use_program_files=True&omaha=True&omaha_use_program_files=True&plat=win&tag=eyJUQUdTIjoiZUp5clZpcE9MUzdPek0tTHoweFJzbEl3TlRFeE1qSXl0ekN4TkRNM05UQTB0REEwTVRJek1EUTFNalcyTkRRMU1ESTBOTFUwTnFvRkFKc1VEWFV-QE1FVEEifQ&tag_token=AgSUCkxdvsAaMv3mTcZhPII-gCEHcXYf7IqCPIGb8yzwdA')
+    sleep(10)
 
-    # Click Decline
-    # click_by_xpath(driver, '//*[@id="decline_cookies_button"]/span')
-    # sleep(5)
-
-    #Click install
-    click_by_xpath(driver, '//*[@id="component2400689423595428325"]/div/div/main/div/a')
-    sleep(5)
-    # // *[ @ id = "accept_all_cookies_button"] / span
-    #Click skip
-    click_by_xpath(driver, '/html/body/div[10]/div/div/div/div/div[1]/div[2]/div')
-    sleep(5)
-
-#Run file exe nếu đã có
 run_file_exe(file_path)
