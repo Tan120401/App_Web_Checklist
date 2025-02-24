@@ -20,7 +20,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-
 # Function to write logs
 def write_log(testcase_name,pass_list, fail_list, log_file_name):
     # Open log file and write
@@ -154,7 +153,6 @@ def get_download_folder():
 # Function download app by link
 def download_by_link(link):
     # Tạo tùy chọn cho Chrome
-    # chrome_options = webdriver.ChromeOptions()
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
     # Cấu hình bỏ qua xác nhận người dùng, tự động down load về folder down load
@@ -175,13 +173,120 @@ def download_by_link(link):
 # Run file exe
 # Kiểm tra lại xem tệp đã tồn tại chưa
 def run_file_exe(file_path):
-    if os.path.isfile(file_path):
-        print('Tệp đã được tải xuống. Đang chạy tệp...')
-        if platform.system() == "Windows":
-            subprocess.run([file_path], shell=True)
-        elif platform.system() == "Darwin":
-            subprocess.run(["open", file_path])
+    try:
+        # subprocess.run sẽ chờ cho tiến trình con chạy xong
+        # subprocess.Popen chỉ chạy file exe mà không chờ các tiến trình con chạy xong
+        if os.path.isfile(file_path):
+            print('Tệp đã được tải xuống. Đang chạy tệp...')
+            if platform.system() == "Windows":
+                process =  subprocess.Popen([file_path], shell=True)
+            elif platform.system() == "Darwin":
+                process =  subprocess.Popen(["open", file_path])
+            else:
+                process =  subprocess.Popen(["xdg-open", file_path])
         else:
-            subprocess.run(["xdg-open", file_path])
-    else:
-        print('Tệp chưa được tải xuống thành công.')
+            print('Tệp chưa được tải xuống thành công.')
+    except Exception as e:
+        print(f'error run file install: {e}')
+
+# Function close app
+def close_app(app_name):
+    try:
+        app = Application(backend='uia').connect(title_re=app_name)
+        target_window = app.window(title_re=app_name)
+        target_window.close()
+    except Exception as e:
+        print(f'close app error: {e}')
+
+# Function open app return target windows
+def connect_app(app_name):
+    try:
+        app = Application(backend='uia').connect(title_re=f'.*{app_name}.*')
+        target_window = app.window(title_re=f'.*{app_name}.*')
+        return target_window
+    except Exception as e:
+        print(f'connect app error: {e}')
+
+def wait_until(timeout, interval, condition):
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        if condition():
+            return True
+        time.sleep(interval)
+    raise TimeoutError("Time out error")
+
+# Function click object exist
+def click_object(window, title, auto_id, control_type):
+    object_select = window.child_window(title=title, auto_id=auto_id, control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
+        object_select.click_input()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
+
+# Function click object exist
+def click_without_id(window, title, control_type):
+    object_select = window.child_window(title=title, control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
+        object_select.click_input()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
+
+# Function find object
+def find_object(window, title, auto_id, control_type):
+    object_find = window.child_window(title=title, auto_id=auto_id, control_type=control_type)
+    try:
+        wait_until(5, 0.5, lambda: object_find.exists())
+        result = [True, title, object_find]
+    except Exception as e:
+        print(f'Find Object error: {title, e}')
+        result = [False, title, None]
+    return result
+
+import winreg
+
+def check_program_installed(program_name):
+    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
+    for i in range(0, winreg.QueryInfoKey(key)[0]):
+        sub_key_name = winreg.EnumKey(key, i)
+        sub_key = winreg.OpenKey(key, sub_key_name)
+        try:
+            display_name = winreg.QueryValueEx(sub_key, "DisplayName")[0]
+            if program_name.lower() in display_name.lower():
+                return True
+        except FileNotFoundError:
+            pass
+        finally:
+            sub_key.Close()
+
+    # Kiểm tra các chương trình 32-bit trên hệ thống 64-bit
+    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall")
+    for i in range(0, winreg.QueryInfoKey(key)[0]):
+        sub_key_name = winreg.EnumKey(key, i)
+        sub_key = winreg.OpenKey(key, sub_key_name)
+        try:
+            display_name = winreg.QueryValueEx(sub_key, "DisplayName")[0]
+            if program_name.lower() in display_name.lower():
+                return True
+        except FileNotFoundError:
+            pass
+        finally:
+            sub_key.Close()
+    return False
+
+# Print all windows
+def print_all_windows():
+    desktop = Desktop(backend='uia')
+    all_windows = desktop.windows()
+    for win in all_windows:
+        print(win.window_text())
+download_directory = get_download_folder()

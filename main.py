@@ -9,7 +9,7 @@ from PyQt6.QtGui import QColor, QBrush
 from PyQt6.QtWidgets import QMainWindow, QApplication, QHeaderView, QStyledItemDelegate, QTableWidgetItem, QProxyStyle, \
     QMessageBox
 
-from Resource.data import data_testcase
+from Resource.data import app_list_data
 from app_web_ui import Ui_mainWindow
 from common_lib import write_result_report, init_file_name
 
@@ -53,16 +53,9 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         self.testcase_detail = [] #Detail test case
 
         #init test case name and detail
-        self.testcase_name = data_testcase['test case']
-        self.testcase_detail = data_testcase['test case detail']
+        self.app_list_info = app_list_data
 
-        #List of result report
-        self.testcase_name_report = []
-        self.testcase_result_report = []
-        self.init_file_name = []
-
-        self.testcase_selected = [] #all test case selected
-        self.testcase_selected_detail = [] #all test case selected detail
+        self.app_selected = [] #all test case selected
         self.current_index = 0 #test case index
         self.threads = []
 
@@ -85,14 +78,14 @@ class MainWindow(QMainWindow, Ui_mainWindow):
             # init table
             tablewidget = self.ui.tableResult
             tablewidget.setColumnCount(4)
-            tablewidget.setHorizontalHeaderLabels(['No.', 'App Name', 'Result', 'Link download'])
+            tablewidget.setHorizontalHeaderLabels(['No.', 'App Name', 'Result', 'Download Link'])
 
             # Format header
             header = tablewidget.horizontalHeader()
             header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
             tablewidget.setColumnWidth(0, 36)
             header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
-            tablewidget.setColumnWidth(1, 180)
+            tablewidget.setColumnWidth(1, 220)
             header.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)
             tablewidget.setColumnWidth(2, 80)
             header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
@@ -111,17 +104,13 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                                }
                            """)
             center = CenterAlignDelegate()
-            tablewidget.setItemDelegateForColumn(1, center)
             tablewidget.setItemDelegateForColumn(2, center)
 
             # init data table widget
             tablewidget.setRowCount(0)
-            dic_data = data_testcase
-            # self.testcase_name = dic_data['test case']
-            print('test case name init: ', self.testcase_name)
             # self.testcase_detail = dic_data['test case detail']
-            for i, (name, detail) in enumerate(zip(self.testcase_name, self.testcase_detail)):
-                tablewidget.insertRow(i)
+            for index, app_info in enumerate(self.app_list_info):
+                tablewidget.insertRow(index)
 
                 checkbox_item = QTableWidgetItem()
                 checkbox_item.setFlags(Qt.ItemFlag.ItemIsUserCheckable | Qt.ItemFlag.ItemIsEnabled)
@@ -129,26 +118,22 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                     checkbox_item.setCheckState(Qt.CheckState.Unchecked)
                 else:
                     checkbox_item.setCheckState(Qt.CheckState.Checked)
-                tablewidget.setItem(i, 0, checkbox_item)
+                tablewidget.setItem(index, 0, checkbox_item)
 
-                tablewidget.setItem(i, 1, QTableWidgetItem(name))
-                print('abc')
+                tablewidget.setItem(index, 1, QTableWidgetItem(app_info[0]))
             # Merger col test case detail
-            tablewidget.setSpan(0, 3, len(self.testcase_name), 1)
+            tablewidget.setSpan(0, 3, len(self.app_list_info), 1)
         except Exception as e:
             print(e)
 
     # Click start btn
     def on_clicked_start(self):
         # self.clear_table_data()
-        if len(self.testcase_selected) == 0:
+        if len(self.app_selected) == 0:
             # self.show_notification('Please select test case!')
-            self.testcase_name = data_testcase['test case']
-            self.testcase_detail = data_testcase['test case detail']
+            self.app_list_info = app_list_data
         else:
-            self.init_file_name = init_file_name()
-            self.testcase_name = self.testcase_selected
-            self.testcase_detail = self.testcase_selected_detail
+            self.app_list_info = self.app_selected
             print('test case name when click start: ', self.testcase_name)
             self.is_selected = True
             self.init_ui()
@@ -174,11 +159,14 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     def start_handle_testcase(self):
         if self.current_index >= len(self.threads) or not self.threads[self.current_index]._is_running:
             return
-        testcase = self.testcase_name[self.current_index]
-        module_name = f'{testcase}'
-        module = importlib.import_module(module_name)
+        file_name = self.testcase_name[self.current_index] # Tên file để import hàm
+        testcase = file_name.replace(" ", "_") # Chuyển dấu cách thành dấu _
+
+        module = importlib.import_module(file_name)
+        # print('module: ', module)
         testcase_function = getattr(module, testcase)
-        result = testcase_function(self.testcase_detail[self.current_index], self.init_file_name[0])
+        # print('test case function: ', testcase)
+        result = testcase_function()
         # print(f'result {testcase}: {result}')
         if result:
             self.reload_row_data('PASS', self.current_index, 2)
@@ -189,7 +177,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         self.testcase_name_report.append(testcase)
 
         #Write result to excel file
-        write_result_report(self.testcase_name_report, self.testcase_result_report, self.init_file_name[1])
+        # write_result_report(self.testcase_name_report, self.testcase_result_report, self.init_file_name[1])
 
     # Function finish handle test case
     def on_thread_finished(self):
@@ -206,27 +194,25 @@ class MainWindow(QMainWindow, Ui_mainWindow):
 
     # Change status check
     def onCellChanged(self, row, col):
+        print('abc')
         if col == 0 and not self.is_selected:
             item = self.ui.tableResult.item(row, col)
             box_check = item.checkState()
             self.ui.tableResult.blockSignals(True)
 
+            print(row, col)
+            print(box_check)
+            print(self.is_selected)
             if box_check == Qt.CheckState.Checked:
-                print('Selected: ', self.testcase_selected)
-                print('row selected: ', self.testcase_name)
-                self.testcase_selected.append(self.testcase_name[row])
-                self.testcase_selected_detail.append(self.testcase_detail[row])
-                detail = '\n'.join(self.testcase_detail[row])
+                self.app_selected.append(self.app_list_info[row])
+                detail = self.app_list_info[row][1]
+                print(detail)
                 detail_testcase = QTableWidgetItem(detail)
                 self.ui.tableResult.setItem(0, col + 3, detail_testcase)
             else:
-                self.testcase_name = self.testcase_name
-                print('test case name truoc select: ', self.testcase_name)
-                print('row unselected: ', self.testcase_name[row])
-                self.testcase_selected.remove(self.testcase_name[row])
-                self.testcase_selected_detail.remove(self.testcase_detail[row])
+                self.app_selected.remove(self.app_list_info[row])
                 self.ui.tableResult.setItem(0, col + 3, QTableWidgetItem(""))
-                print('test case name sau select: ', self.testcase_name)
+                print('test case name sau select: ', self.app_selected)
             self.ui.tableResult.blockSignals(False)
 
             checkbox_status = self.areAllCheckBoxesChecked()
@@ -237,8 +223,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
             else:
                 self.status_checkboxes = False
                 self.ui.selectallBtn.setText('Select All')
-
-            print('selected test case: ', self.testcase_selected)
 
     # Function check status all check box
     def areAllCheckBoxesChecked(self):
@@ -261,15 +245,15 @@ class MainWindow(QMainWindow, Ui_mainWindow):
 
         if self.status_checkboxes == True:
             self.ui.selectallBtn.setText('Select All')
-
+            print('da check all')
             for row in range(rowCount):
                 for col in range(colCount):
                     item = self.ui.tableResult.item(row, col)
                     if item and item.checkState() == Qt.CheckState.Checked:
                         item.setCheckState(Qt.CheckState.Unchecked)
         else:
-            self.testcase_selected = data_testcase['test case']
-            self.testcase_selected_detail = data_testcase['test case detail']
+            print('chua check all')
+            self.app_selected = app_list_data
             self.ui.selectallBtn.setText('Unselect All')
             for row in range(rowCount):
                 item = self.ui.tableResult.item(row, 0)
@@ -357,4 +341,3 @@ if __name__ == "__main__":
     main_window = MainWindow()
     main_window.show()
     sys.exit(app.exec())
-Y
