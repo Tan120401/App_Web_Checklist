@@ -4,7 +4,6 @@ from time import sleep
 
 from common_lib import download_by_link, run_file_exe
 
-()
 
 # Đường dẫn đến tệp thực thi
 file_path = os.path.join(download_directory, 'ALPDF403.exe')

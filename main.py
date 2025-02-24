@@ -1,8 +1,6 @@
 import importlib
 import os
 import sys
-from datetime import datetime
-from logging import exception
 
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QColor, QBrush
@@ -11,7 +9,6 @@ from PyQt6.QtWidgets import QMainWindow, QApplication, QHeaderView, QStyledItemD
 
 from Resource.data import app_list_data
 from app_web_ui import Ui_mainWindow
-from common_lib import write_result_report, init_file_name
 
 #Class css text center
 class CenterAlignDelegate(QStyledItemDelegate):
@@ -129,12 +126,15 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     # Click start btn
     def on_clicked_start(self):
         # self.clear_table_data()
+        print('app list all', self.app_list_info)
+        print('app list selected', self.app_selected)
         if len(self.app_selected) == 0:
-            # self.show_notification('Please select test case!')
+            self.show_notification('Please select test case!')
             self.app_list_info = app_list_data
         else:
             self.app_list_info = self.app_selected
-            print('test case name when click start: ', self.testcase_name)
+            print('test case name when click start: ', self.app_list_info[self.current_index])
+
             self.is_selected = True
             self.init_ui()
             self.run_next_testcase()
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     def run_next_testcase(self):
         self.reload_row_data('Running', self.current_index, 2)  # reload status running
         try:
-            if self.current_index < len(self.testcase_name):
+            if self.current_index < len(self.app_list_info):
                 #init thread
                 thread = Worker(target= self.start_handle_testcase)
                 self.threads.append(thread)
@@ -151,7 +151,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                 thread.finished.connect(self.on_thread_finished)
                 #thread start
                 thread.start()
-                print(f'Started handle test case thread: {self.testcase_name[self.current_index]}')
+                print(f'Started handle test case thread: {self.app_list_info[self.current_index]}')
         except Exception as e:
             print(f'Run next test case error: {e}')
 
@@ -159,60 +159,56 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     def start_handle_testcase(self):
         if self.current_index >= len(self.threads) or not self.threads[self.current_index]._is_running:
             return
-        file_name = self.testcase_name[self.current_index] # Tên file để import hàm
+        file_name = self.app_list_info[self.current_index][0] # Tên file để import hàm
         testcase = file_name.replace(" ", "_") # Chuyển dấu cách thành dấu _
 
         module = importlib.import_module(file_name)
         # print('module: ', module)
         testcase_function = getattr(module, testcase)
         # print('test case function: ', testcase)
-        result = testcase_function()
+
+        # Truyền tham số filename exe và download link cho hàm thực hiện test case
+        result = testcase_function(self.app_list_info[self.current_index][0], self.app_list_info[self.current_index][1], self.app_list_info[self.current_index][2])
         # print(f'result {testcase}: {result}')
         if result:
             self.reload_row_data('PASS', self.current_index, 2)
-            self.testcase_result_report.append("PASS")
+            # self.testcase_result_report.append("PASS")
         else:
             self.reload_row_data('FAIL', self.current_index, 2)
-            self.testcase_result_report.append("FAIL")
-        self.testcase_name_report.append(testcase)
+            # self.testcase_result_report.append("FAIL")
+        # self.testcase_name_report.append(testcase)
 
         #Write result to excel file
         # write_result_report(self.testcase_name_report, self.testcase_result_report, self.init_file_name[1])
 
     # Function finish handle test case
     def on_thread_finished(self):
-        print(f'Thread for testcase {self.testcase_name[self.current_index]} finished')
+        print(f'Thread for testcase {self.app_list_info[self.current_index]} finished')
         self.current_index += 1
-        if self.current_index < len(self.testcase_name):
+        if self.current_index < len(self.app_list_info):
             self.run_next_testcase()
         else:
             # self.show_notification('Successfully test case!')
             # self.testcase_name = data_testcase['test case']
+            self.app_list_info = self.app_selected
+            self.current_index = 0
             self.is_selected = False
-            self.testcase_name = self.testcase_selected
-            self.testcase_detail = self.testcase_selected_detail
-
     # Change status check
     def onCellChanged(self, row, col):
-        print('abc')
         if col == 0 and not self.is_selected:
             item = self.ui.tableResult.item(row, col)
             box_check = item.checkState()
             self.ui.tableResult.blockSignals(True)
-
-            print(row, col)
-            print(box_check)
-            print(self.is_selected)
+            print('da vao day')
             if box_check == Qt.CheckState.Checked:
+                #Select show download link
                 self.app_selected.append(self.app_list_info[row])
-                detail = self.app_list_info[row][1]
-                print(detail)
+                detail = self.app_list_info[row][2]
                 detail_testcase = QTableWidgetItem(detail)
                 self.ui.tableResult.setItem(0, col + 3, detail_testcase)
             else:
                 self.app_selected.remove(self.app_list_info[row])
                 self.ui.tableResult.setItem(0, col + 3, QTableWidgetItem(""))
-                print('test case name sau select: ', self.app_selected)
             self.ui.tableResult.blockSignals(False)
 
             checkbox_status = self.areAllCheckBoxesChecked()
@@ -245,14 +241,12 @@ class MainWindow(QMainWindow, Ui_mainWindow):
 
         if self.status_checkboxes == True:
             self.ui.selectallBtn.setText('Select All')
-            print('da check all')
             for row in range(rowCount):
                 for col in range(colCount):
                     item = self.ui.tableResult.item(row, col)
                     if item and item.checkState() == Qt.CheckState.Checked:
                         item.setCheckState(Qt.CheckState.Unchecked)
         else:
-            print('chua check all')
             self.app_selected = app_list_data
             self.ui.selectallBtn.setText('Unselect All')
             for row in range(rowCount):

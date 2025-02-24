@@ -290,3 +290,23 @@ def print_all_windows():
     for win in all_windows:
         print(win.window_text())
 download_directory = get_download_folder()
+
+# Download and run file install
+def download_and_execute(app_name, file_name_exe, download_link, time_wait_download, time_wait_execute):
+    try:
+        result = check_program_installed(app_name)
+        if result:
+            return result
+        # Đường dẫn đến tệp thực thi
+        file_path = os.path.join(download_directory, file_name_exe)
+
+        if not os.path.isfile(file_path):
+            #Down load thông qua link
+            download_by_link(download_link)
+            sleep(time_wait_download)
+
+        # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
+        run_file_exe(file_path)
+        sleep(time_wait_execute)
+    except Exception as e:
+        print(f'Download and run error: {e}')
