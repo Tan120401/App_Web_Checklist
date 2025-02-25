@@ -228,6 +228,20 @@ def click_object(window, title, auto_id, control_type):
     sleep(1)
     return result
 
+# Function click object by index
+def click_object_by_index(window, title, control_type, index):
+    try:
+        object_selects = window.descendants(title=title, control_type=control_type)
+        object_select = object_selects[index]
+        wait_until(5, 1, lambda: object_select.is_visible())
+        object_select.click_input()
+        result = [True, title, object_select]
+    except Exception as e:
+        print(f"Error clicking object: {e}")
+        return (False, title, None)
+    sleep(1)
+    return result
+
 # Function click object exist
 def click_without_id(window, title, control_type):
     object_select = window.child_window(title=title, control_type=control_type)

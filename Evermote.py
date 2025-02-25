@@ -2,15 +2,19 @@ import os
 
 from time import sleep
 
-from common_lib import download_by_link, run_file_exe
+from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed
 
-()
 
-# Đường dẫn đến tệp thực thi
-file_path = os.path.join(download_directory, 'Evernote-latest.exe')
-
-if not os.path.isfile(file_path):
-    download_by_link('https://win.desktop.evernote.com/builds/Evernote-latest.exe')
-    sleep(90)
-
-run_file_exe(file_path)
+def Evermote(app_name, file_name_exe, download_link):
+    try:
+        result = download_and_execute(app_name, file_name_exe, download_link, 12, 5)
+        if result:
+            return result
+        # wait for install done
+        sleep(90)
+        result = check_program_installed(app_name)
+        return result
+    except Exception as e:
+        print(f'error install: {e}')
+        return False
+Evermote('Evermote', 'Evernote-latest.exe', 'https://win.desktop.evernote.com/builds/Evernote-latest.exe')

@@ -1,10 +1,10 @@
 from pywinauto import Desktop
 
 
-from common_lib import check_program_installed
+from common_lib import check_program_installed, print_all_windows
 
-result = check_program_installed('nProtect Online Security')
-print(result)
+# result = check_program_installed('알송')
+# print(result)
 
 # def IPinsideLWS():
 #     try:
@@ -33,3 +33,5 @@ print(result)
 #     except Exception as e:
 #         print(f'error install: {e}')
 #         return False
+
+print_all_windows()

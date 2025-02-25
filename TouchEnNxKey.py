@@ -2,15 +2,23 @@ import os
 
 from time import sleep
 
-from common_lib import download_by_link, run_file_exe
+from common_lib import download_by_link, run_file_exe, download_and_execute, connect_app, click_object, \
+    check_program_installed, close_app
 
-()
 
-# Đường dẫn đến tệp thực thi
-file_path = os.path.join(download_directory, 'TouchEn_nxKey_32bit.exe')
+def TouchEnNxKey(app_name, file_name_exe, download_link):
+    try:
+        result = download_and_execute('TouchEn nxKey', file_name_exe, download_link, 60, 10)
 
-if not os.path.isfile(file_path):
-    download_by_link('https://bank.shinhan.com/sw/initech/extension/down/INIS_EX_SHA2.exe?ver=1.0.1.961')
-    sleep(10)
+        if result:
+            return result
+        sleep(12)
+        # Kết nối tới màn hình cài đặt app
+        close_app('TouchEn nxKey')
 
-run_file_exe(file_path)
+        # Kiem tra xem da cai dat thanh cong hay chua
+        result = check_program_installed('TouchEn nxKey')
+        return result
+    except Exception as e:
+        print(f'error install: {e}')
+        return False
