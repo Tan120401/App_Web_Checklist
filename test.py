@@ -35,3 +35,20 @@ from common_lib import check_program_installed, print_all_windows
 #         return False
 
 print_all_windows()
+
+# from pywinauto import Application, Desktop
+#
+# # Kết nối với cửa sổ 'Battle.net Setup'
+# app = Application(backend="uia").connect(title="Battle.net Setup")
+# dlg = app.window(title="Battle.net Setup")
+# print(dlg.print_control_identifiers())
+
+# Tìm và click vào nút 'Continue'
+# continue_button = dlg.child_window(title="Continue", control_type="Button")
+#
+# # Kiểm tra nếu nút 'Continue' tồn tại và click vào nó
+# if continue_button.exists():
+#     continue_button.click()
+#     print("Đã click vào nút 'Continue'")
+# else:
+#     print("Không tìm thấy nút 'Continue'")

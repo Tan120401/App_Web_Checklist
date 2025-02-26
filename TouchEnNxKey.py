@@ -8,11 +8,18 @@ from common_lib import download_by_link, run_file_exe, download_and_execute, con
 
 def TouchEnNxKey(app_name, file_name_exe, download_link):
     try:
-        result = download_and_execute('TouchEn nxKey', file_name_exe, download_link, 60, 10)
-
+        # Check app is installed
+        result = check_program_installed('TouchEn nxKey')
         if result:
             return result
-        sleep(12)
+
+        # Download and execute install file
+        download_result = download_and_execute(file_name_exe, download_link, 60, 5)
+
+        # If download and excute fail -> return fail
+        if not download_result:
+            return download_result
+
         # Kết nối tới màn hình cài đặt app
         close_app('TouchEn nxKey')
 

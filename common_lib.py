@@ -14,7 +14,7 @@ from pywinauto import Application, Desktop
 import random
 
 from selenium import webdriver
-from selenium.webdriver import Keys
+from selenium.webdriver import Keys, ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.service import Service
@@ -137,6 +137,8 @@ def link_search(link):
 #Function click by Xpath
 def click_by_xpath(driver, xpath):
     element = driver.find_element(By.XPATH, xpath)
+    actions = ActionChains(driver)
+    actions.move_to_element(element).perform()
     print('display', element.is_displayed())
     element.click()
 
@@ -149,6 +151,18 @@ def get_download_folder():
     else:  # Linux and other Unix-like systems
         download_folder = os.path.join(os.getenv('HOME'), 'Downloads')
     return download_folder
+download_directory = get_download_folder()
+
+#Get latest file download
+def get_latest_file():
+    while True:
+        files = os.listdir(download_directory)
+        if files:
+            files = [os.path.join(download_directory, f) for f in files if not f.endswith('.tmp')]
+            files.sort(key=os.path.getctime, reverse=True)
+            if files:
+                return files[0]
+        time.sleep(1)
 
 # Function download app by link
 def download_by_link(link):
@@ -255,6 +269,19 @@ def click_without_id(window, title, control_type):
     sleep(1)
     return result
 
+# Function click without title
+def click_without_title(window, auto_id, control_type):
+    object_select = window.child_window(auto_id=auto_id, control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
+        object_select.click_input()
+        result = [True, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, None]
+    sleep(1)
+    return result
+
 # Function find object
 def find_object(window, title, auto_id, control_type):
     object_find = window.child_window(title=title, auto_id=auto_id, control_type=control_type)
@@ -269,8 +296,12 @@ def find_object(window, title, auto_id, control_type):
 import winreg
 
 def check_program_installed(program_name):
-    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall")
-    for i in range(0, winreg.QueryInfoKey(key)[0]):
+    # Mở khóa registry chính của các chương trình cài đặt trên hệ thống 64-bit
+    key_path = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path)
+
+    # Kiểm tra các chương trình cài đặt
+    for i in range(winreg.QueryInfoKey(key)[0]):
         sub_key_name = winreg.EnumKey(key, i)
         sub_key = winreg.OpenKey(key, sub_key_name)
         try:
@@ -283,10 +314,13 @@ def check_program_installed(program_name):
             sub_key.Close()
 
     # Kiểm tra các chương trình 32-bit trên hệ thống 64-bit
-    key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall")
-    for i in range(0, winreg.QueryInfoKey(key)[0]):
-        sub_key_name = winreg.EnumKey(key, i)
-        sub_key = winreg.OpenKey(key, sub_key_name)
+    key_path_32bit = r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    key_32bit = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path_32bit)
+
+    # Kiểm tra các chương trình cài đặt
+    for i in range(winreg.QueryInfoKey(key_32bit)[0]):
+        sub_key_name = winreg.EnumKey(key_32bit, i)
+        sub_key = winreg.OpenKey(key_32bit, sub_key_name)
         try:
             display_name = winreg.QueryValueEx(sub_key, "DisplayName")[0]
             if program_name.lower() in display_name.lower():
@@ -295,6 +329,7 @@ def check_program_installed(program_name):
             pass
         finally:
             sub_key.Close()
+
     return False
 
 # Print all windows
@@ -303,24 +338,22 @@ def print_all_windows():
     all_windows = desktop.windows()
     for win in all_windows:
         print(win.window_text())
-download_directory = get_download_folder()
 
 # Download and run file install
-def download_and_execute(app_name, file_name_exe, download_link, time_wait_download, time_wait_execute):
+def download_and_execute(file_name_exe, download_link, time_wait_download, time_wait_execute):
     try:
-        result = check_program_installed(app_name)
-        if result:
-            return result
+
         # Đường dẫn đến tệp thực thi
         file_path = os.path.join(download_directory, file_name_exe)
-
         if not os.path.isfile(file_path):
             #Down load thông qua link
             download_by_link(download_link)
             sleep(time_wait_download)
-
+        file_path = get_latest_file()
         # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
         run_file_exe(file_path)
         sleep(time_wait_execute)
+        return True
     except Exception as e:
         print(f'Download and run error: {e}')
+        return False

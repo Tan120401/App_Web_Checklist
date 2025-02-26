@@ -2,19 +2,31 @@ import os
 
 from time import sleep
 
-from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed
+from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed, connect_app, \
+    click_object
 
-
-def Evermote(app_name, file_name_exe, download_link):
+def Evernote(app_name, file_name_exe, download_link):
     try:
-        result = download_and_execute(app_name, file_name_exe, download_link, 12, 5)
+        # Check app is installed
+        result = check_program_installed(app_name)
         if result:
             return result
+
+        # Download and execute install file
+        download_result = download_and_execute(file_name_exe, download_link, 30, 5)
+
+        # If download and excute fail -> return fail
+        if not download_result:
+            return download_result
+
         # wait for install done
-        sleep(90)
+        target_window = connect_app('Evernote Setup')
+        click_object(target_window, 'I accept the terms in the License Agreement', '1034', 'CheckBox')
+        click_object(target_window, 'Next >', '1', 'Button')
+        click_object(target_window, 'Install', '1', 'Button')
+        sleep(10)
         result = check_program_installed(app_name)
         return result
     except Exception as e:
         print(f'error install: {e}')
         return False
-Evermote('Evermote', 'Evernote-latest.exe', 'https://win.desktop.evernote.com/builds/Evernote-latest.exe')

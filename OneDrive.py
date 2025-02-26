@@ -1,10 +1,11 @@
+import os
 
 from time import sleep
 
-from common_lib import download_and_execute, connect_app, check_program_installed
+from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed, connect_app, \
+    click_object
 
-
-def Dropbox(app_name, file_name_exe, download_link):
+def OneDrive(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
         result = check_program_installed(app_name)
@@ -18,8 +19,7 @@ def Dropbox(app_name, file_name_exe, download_link):
         if not download_result:
             return download_result
 
-        # wait for install done
-        sleep(90)
+        sleep(12)
         result = check_program_installed(app_name)
         return result
     except Exception as e:

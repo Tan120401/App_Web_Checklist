@@ -8,9 +8,18 @@ from common_lib import download_by_link, run_file_exe, click_by_xpath, download_
 
 def Melon_Player(app_name, file_name_exe, download_link):
     try:
-        result = download_and_execute(app_name, file_name_exe, download_link, 30, 5)
+        # Check app is installed
+        result = check_program_installed(app_name)
         if result:
             return result
+
+        # Download and execute install file
+        download_result = download_and_execute(file_name_exe, download_link, 30, 5)
+
+        # If download and excute fail -> return fail
+        if not download_result:
+            return download_result
+
         # Kết nối tới màn hình cài đặt app
         target_window = connect_app('Melon Player')
         click_object(target_window, '동의함', '1','Button')
@@ -23,6 +32,3 @@ def Melon_Player(app_name, file_name_exe, download_link):
     except Exception as e:
         print(f'error install: {e}')
         return False
-
-result = Melon_Player('Melon Player', 'MelonSetup.exe', 'https://cdnstatic.melon.co.kr/svc/pcp/apps/w10/MelonSetup.exe')
-print(result)

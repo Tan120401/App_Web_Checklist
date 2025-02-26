@@ -7,10 +7,19 @@ from common_lib import download_by_link, run_file_exe, download_and_execute, che
 
 def Bandizip(app_name, file_name_exe, download_link):
     try:
-        result = download_and_execute(app_name, file_name_exe, download_link, 30, 5)
 
+        # Check app is installed
+        result = check_program_installed(app_name)
         if result:
             return result
+
+        # Download and execute install file
+        download_result = download_and_execute(file_name_exe, download_link, 30, 10)
+
+        # If download and excute fail -> return fail
+        if not download_result:
+            return download_result
+
         # Kết nối tới màn hình cài đặt app
         target_window = connect_app('Install Bandizip')
         click_object_by_index(target_window, '', 'Pane', 1)

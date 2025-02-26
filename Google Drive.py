@@ -1,11 +1,12 @@
 import os
+
 from time import sleep
 
 from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed, connect_app, \
     click_object
 
 
-def Stove(app_name, file_name_exe, download_link):
+def Google_Drive(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
         result = check_program_installed(app_name)
@@ -13,22 +14,22 @@ def Stove(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 30, 5)
 
         # If download and excute fail -> return fail
         if not download_result:
             return download_result
 
-        # Connect Stove
-        target_window = connect_app('LauncherSetup')
-        #Click next
-        print(target_window.print_control_identifiers())
-        click_object(target_window, 'Next', '', 'Button')
-        # sleep(12)
+        #Connect app
+        target_window = connect_app('Google Drive')
+        click_object(target_window, '', '301', 'Button')
+        sleep(5)
+        click_object(target_window, '', '303', 'Button')
+        sleep(10)
         result = check_program_installed(app_name)
         return result
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Stove('Stove', 'STOVESetup.exe', 'https://dl-dev.onstove.com/temp/STOVESetup.exe')
+result = Google_Drive('Google Drive', 'GoogleDriveSetup.exe', 'https://dl.google.com/drive-file-stream/GoogleDriveSetup.exe')
 print(result)

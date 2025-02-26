@@ -1,11 +1,11 @@
 import os
 from time import sleep
 
-from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed, connect_app, \
-    click_object
+from common_lib import download_by_link, run_file_exe, check_program_installed, download_and_execute, connect_app, \
+    click_without_id, click_object
 
 
-def Stove(app_name, file_name_exe, download_link):
+def PokerStars(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
         result = check_program_installed(app_name)
@@ -19,16 +19,17 @@ def Stove(app_name, file_name_exe, download_link):
         if not download_result:
             return download_result
 
-        # Connect Stove
-        target_window = connect_app('LauncherSetup')
+        # Connect app
+        target_window = connect_app('Setup PokerStars')
+        click_object(target_window, 'I agree to terms of the PokerStars ', '151', 'CheckBox')
+        click_without_id(target_window, 'I', 'Button')
+        click_without_id(target_window, 'L', 'Button')
         #Click next
-        print(target_window.print_control_identifiers())
-        click_object(target_window, 'Next', '', 'Button')
-        # sleep(12)
+
+        #Wait for installation
+        sleep(5)
         result = check_program_installed(app_name)
         return result
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Stove('Stove', 'STOVESetup.exe', 'https://dl-dev.onstove.com/temp/STOVESetup.exe')
-print(result)
