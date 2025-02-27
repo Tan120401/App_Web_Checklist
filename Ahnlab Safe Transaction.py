@@ -1,5 +1,4 @@
-import os
-from time import sleep
+
 
 from common_lib import download_by_link, run_file_exe, download_directory, connect_app, \
     click_object, check_program_installed

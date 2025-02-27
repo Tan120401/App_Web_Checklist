@@ -1,4 +1,3 @@
-import os
 from time import sleep
 
 from common_lib import download_and_execute, print_all_windows, connect_app, \

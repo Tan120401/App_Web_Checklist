@@ -36,6 +36,7 @@ from common_lib import check_program_installed, print_all_windows
 
 print_all_windows()
 
+
 # from pywinauto import Application, Desktop
 #
 # # Kết nối với cửa sổ 'Battle.net Setup'

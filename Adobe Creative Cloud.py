@@ -5,7 +5,6 @@ from time import sleep
 from common_lib import download_by_link, run_file_exe, click_by_xpath, download_and_execute, connect_app, click_object, \
     check_program_installed, download_directory, click_without_id
 
-
 def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
@@ -14,7 +13,7 @@ def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 30, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 10, 120)
 
         # If download and excute fail -> return fail
         if not download_result:

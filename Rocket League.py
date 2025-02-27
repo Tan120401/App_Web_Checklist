@@ -1,9 +1,7 @@
-import os
 from time import sleep
 
 from common_lib import download_by_link, run_file_exe, check_program_installed, download_and_execute, connect_app, \
     click_object, click_without_id
-
 
 def Rocket_League(app_name, file_name_exe, download_link):
     try:
@@ -32,5 +30,3 @@ def Rocket_League(app_name, file_name_exe, download_link):
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Rocket_League('Rocket_League', 'EpicInstaller-18.0.0.msi', 'https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi')
-print(result)

@@ -136,11 +136,19 @@ def link_search(link):
 
 #Function click by Xpath
 def click_by_xpath(driver, xpath):
-    element = driver.find_element(By.XPATH, xpath)
-    actions = ActionChains(driver)
-    actions.move_to_element(element).perform()
-    print('display', element.is_displayed())
-    element.click()
+    try:
+        element = driver.find_element(By.XPATH, xpath)
+        if element:
+            actions = ActionChains(driver)
+            actions.move_to_element(element).perform()
+            print('display', element.is_displayed())
+            element.click()
+            return True
+        return False
+    except Exception as e:
+        # print(f'Click by xpath error: {e}')
+        return False
+
 
 # Function get folder
 def get_download_folder():

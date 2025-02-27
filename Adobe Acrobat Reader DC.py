@@ -7,9 +7,18 @@ from common_lib import download_and_execute, connect_app, click_object, check_pr
 
 def Adobe_Acrobat_Reader(app_name, file_name_exe, download_link):
     try:
-        result = download_and_execute('Adobe Acrobat', file_name_exe, download_link, 10, 120)
+        # Check app is installed
+        result = check_program_installed(app_name)
         if result:
             return result
+
+        # Download and execute install file
+        download_result = download_and_execute(file_name_exe, download_link, 30, 120)
+
+        # If download and excute fail -> return fail
+        if not download_result:
+            return download_result
+
         # Kết nối tới màn hình cài đặt app
         target_window = connect_app('Adobe Acrobat Reader Installer')
         # Click finished
