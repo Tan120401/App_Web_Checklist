@@ -199,9 +199,9 @@ def run_file_exe(file_path):
         # subprocess.run sẽ chờ cho tiến trình con chạy xong
         # subprocess.Popen chỉ chạy file exe mà không chờ các tiến trình con chạy xong
         if os.path.isfile(file_path):
-            print('Tệp đã được tải xuống. Đang chạy tệp...')
+            print(f'Tệp đã được tải xuống. {file_path} Đang chạy tệp...')
             if platform.system() == "Windows":
-                process =  subprocess.Popen([file_path], shell=True)
+                process =  subprocess.Popen(f'"{file_path}"', shell=True)
             elif platform.system() == "Darwin":
                 process =  subprocess.Popen(["open", file_path])
             else:
@@ -214,8 +214,8 @@ def run_file_exe(file_path):
 # Function close app
 def close_app(app_name):
     try:
-        app = Application(backend='uia').connect(title_re=app_name)
-        target_window = app.window(title_re=app_name)
+        app = Application(backend='uia').connect(title_re=f".*{app_name}.*")
+        target_window = app.window(title_re=f".*{app_name}.*")
         target_window.close()
     except Exception as e:
         print(f'close app error: {e}')

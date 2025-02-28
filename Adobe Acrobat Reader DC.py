@@ -1,9 +1,4 @@
-import os
-
-from time import sleep
-
 from common_lib import download_and_execute, connect_app, click_object, check_program_installed
-
 
 def Adobe_Acrobat_Reader(app_name, file_name_exe, download_link):
     try:

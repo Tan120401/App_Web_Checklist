@@ -46,8 +46,15 @@ app_list_data = [
     ['Alpdf', 'ALPDF403.exe', 'https://altools.co.kr/product/ALPDF'],
     ['Wondershare pdfelement', 'pdfelement-pro_setup_full5239.exe', 'https://download.wondershare.com/pdfelement-pro_full5239.exe?_gl=1*15dl66l*_ga*OTQ2NTk5MDE3LjE3NDAzNjE2MzQ.*_ga_24WTSJBD5B*MTc0MDM2MTYzMy4xLjAuMTc0MDM2MTYzNS42MC4wLjE2NDIwNDk4NQ..*_gcl_au*MTc0MTcxMjM3MC4xNzQwMzYxNjM2'],
     ['PDF-XChange Editor', 'PDFXVE10.exe',"https://www.pdf-xchange.de/DL/tracker10/editor-zip-tracker.php"],
-    [],
-    [],
+    ['BANDIVIEW', 'BANDIVIEW-SETUP-X64.EXE', 'https://www.bandisoft.com/bandiview/dl.php?web'],
+    ['AlSee', 'ALToolsSetup.exe', 'https://advert.estsoft.com/?event=200910145916818'],
+    ['DWG FastView', 'DWGFastView(KR-1)_x64_1.exe', 'https://dwgfastview-bsyun.dwgfastview.com/Download/KR/8.8/DWGFastView%28KR-1%29_x64_1.exe'],
+    ['Alcapture', 'ALCapture318.exe', 'https://advert.estsoft.com/?event=201110311523647'],
+    ['GOM Cam', 'GOMCAM2024SETUP_NEW.EXE', 'https://cdn2.gomlab.com/gretech/gomcam/GOMCAM2024SETUP_NEW.EXE'],
+    ['oCam','oCam_v550.0.exe','https://ohsoft.net/update/download.php'],
+    ['Ahnlab V3 Lite','V3_Lite_Setup.exe','https://provide.ahnlab.com/v3lite/v40/download/V3_Lite_Setup.exe'],
+    ['CCleaner','ccsetup633.exe','https://www.ccleaner.com/ccleaner/download/standard'],
+    ['Alyac','ALYac25.exe','https://cdn1.estsecurity.com/setup/ALYac/ALYac25.exe'],
     [],
     [],
     [],
@@ -57,5 +64,4 @@ app_list_data = [
     [],
     [],
 
-
-                ]
+]

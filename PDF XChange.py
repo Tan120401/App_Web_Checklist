@@ -48,5 +48,3 @@ def PDF_XChange(app_name, file_name_exe, download_link):
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = PDF_XChange('PDF-XChange Editor', 'PDFXVE10.exe',"https://www.pdf-xchange.de/DL/tracker10/editor-zip-tracker.php")
-print(result)

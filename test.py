@@ -1,7 +1,7 @@
 from pywinauto import Desktop
+from pywinauto.findwindows import find_windows
 
-
-from common_lib import check_program_installed, print_all_windows
+from common_lib import check_program_installed, print_all_windows, run_file_exe
 
 # result = check_program_installed('알송')
 # print(result)
@@ -53,3 +53,4 @@ print_all_windows()
 #     print("Đã click vào nút 'Continue'")
 # else:
 #     print("Không tìm thấy nút 'Continue'")
+

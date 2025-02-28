@@ -1,15 +1,15 @@
+import os
+
 from time import sleep
 
-from pywinauto import Desktop
-
-from common_lib import download_by_link, run_file_exe, download_directory, connect_app, check_program_installed, \
-    download_and_execute, print_all_windows, click_without_id
+from common_lib import download_by_link, run_file_exe, check_program_installed, download_and_execute, connect_app, \
+    print_all_windows, click_without_id, close_app
 
 
-def Alcapture(app_name, file_name_exe, download_link):
+def AlSee(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
-        result = check_program_installed('알캡처')
+        result = check_program_installed('알씨')
         if result:
             return result
 
@@ -21,20 +21,18 @@ def Alcapture(app_name, file_name_exe, download_link):
             return download_result
 
         # Connect app
-        target_window = connect_app('Setup - 알캡처')
+        target_window = connect_app('Setup - 알씨')
         click_without_id(target_window, 'Agree(A)', 'Button')
-        sleep(5)
 
         almain_window = connect_app('알매니저')
         click_without_id(almain_window, '설치를 시작합니다.', 'Button')
         sleep(12)
-        click_without_id(almain_window, '확인', 'Button')
+        click_without_id(almain_window, '제품 실행', 'Button')
         click_without_id(almain_window, '취소', 'Button')
         almain_window.close()
         # Check app install
-        result = check_program_installed('알캡처')
-
+        result = check_program_installed('알씨')
         return result
     except Exception as e:
-        print(f'error app: {e}')
+        print(f'error install: {e}')
         return False
