@@ -177,6 +177,8 @@ def download_by_link(link):
     # Tạo tùy chọn cho Chrome
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--ignore-ssl-errors')
     # Cấu hình bỏ qua xác nhận người dùng, tự động down load về folder down load
     prefs = {"download.default_directory": "Downloads",
              "download.prompt_for_download": False,  # Chrome sẽ không hiện cửa sổ xác nhận trước khi tải xuống tệp.
@@ -189,7 +191,7 @@ def download_by_link(link):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     # Mở một trang web
-    driver.get(f'{link}')
+    driver.get(link)
     return driver
 
 # Run file exe
@@ -277,6 +279,19 @@ def click_without_id(window, title, control_type):
     sleep(1)
     return result
 
+# Function click object exist
+def click_without_id_invoke(window, title, control_type):
+    object_select = window.child_window(title=title, control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
+        object_select.invoke()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
+
 # Function click without title
 def click_without_title(window, auto_id, control_type):
     object_select = window.child_window(auto_id=auto_id, control_type=control_type)
@@ -303,6 +318,7 @@ def find_object(window, title, auto_id, control_type):
 
 import winreg
 
+# Check App and program installed
 def check_program_installed(program_name):
     # Mở khóa registry chính của các chương trình cài đặt trên hệ thống 64-bit
     key_path = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
@@ -338,6 +354,24 @@ def check_program_installed(program_name):
         finally:
             sub_key.Close()
 
+    return False
+
+#Check app install 64 bit
+def check_app_installed(app_name):
+    file_path = r"C:\Program Files (x86)"
+    for root, dirs, files in os.walk(file_path):
+        for dir_name in dirs:
+            if app_name.lower() in dir_name.lower():
+                return True
+    return False
+
+#Check app install 32 bit
+def check_app_installed_32(app_name):
+    file_path = r"C:\Program Files"
+    for root, dirs, files in os.walk(file_path):
+        for dir_name in dirs:
+            if app_name.lower() in dir_name.lower():
+                return True
     return False
 
 # Print all windows

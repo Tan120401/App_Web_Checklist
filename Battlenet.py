@@ -1,4 +1,4 @@
-
+from time import sleep
 
 from pywinauto import Application
 
