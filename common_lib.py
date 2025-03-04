@@ -244,6 +244,33 @@ def click_object(window, title, auto_id, control_type):
     object_select = window.child_window(title=title, auto_id=auto_id, control_type=control_type)
     try:
         wait_until(5, 1, lambda: object_select.exists())
+        object_select.invoke()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
+
+# Function click object by image
+def click_object_by_image(file_path, confidence_value  = 0.9):
+    object_select = pyautogui.locateCenterOnScreen(file_path, confidence=confidence_value)
+    print(object_select)
+    try:
+        wait_until(5, 1, lambda: object_select)
+        pyautogui.click(object_select)
+        result = True
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = False
+    sleep(1)
+    return result
+
+# Function click object exist
+def click_object_click_input(window, title, auto_id, control_type):
+    object_select = window.child_window(title=title, auto_id=auto_id, control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
         object_select.click_input()
         result = [True, title, object_select]
     except TimeoutError as e:
@@ -258,7 +285,7 @@ def click_object_by_index(window, title, control_type, index):
         object_selects = window.descendants(title=title, control_type=control_type)
         object_select = object_selects[index]
         wait_until(5, 1, lambda: object_select.is_visible())
-        object_select.click_input()
+        object_select.invoke()
         result = [True, title, object_select]
     except Exception as e:
         print(f"Error clicking object: {e}")
@@ -268,19 +295,6 @@ def click_object_by_index(window, title, control_type, index):
 
 # Function click object exist
 def click_without_id(window, title, control_type):
-    object_select = window.child_window(title=title, control_type=control_type)
-    try:
-        wait_until(5, 1, lambda: object_select.exists())
-        object_select.click_input()
-        result = [True, title, object_select]
-    except TimeoutError as e:
-        print(f'Click error: {e}')
-        result = [False, title, None]
-    sleep(1)
-    return result
-
-# Function click object exist
-def click_without_id_invoke(window, title, control_type):
     object_select = window.child_window(title=title, control_type=control_type)
     try:
         wait_until(5, 1, lambda: object_select.exists())
@@ -297,7 +311,7 @@ def click_without_title(window, auto_id, control_type):
     object_select = window.child_window(auto_id=auto_id, control_type=control_type)
     try:
         wait_until(5, 1, lambda: object_select.exists())
-        object_select.click_input()
+        object_select.invoke()
         result = [True, object_select]
     except TimeoutError as e:
         print(f'Click error: {e}')
@@ -391,11 +405,39 @@ def download_and_execute(file_name_exe, download_link, time_wait_download, time_
             #Down load thông qua link
             download_by_link(download_link)
             sleep(time_wait_download)
-        file_path = get_latest_file()
         # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
         run_file_exe(file_path)
         sleep(time_wait_execute)
         return True
+    except Exception as e:
+        print(f'Download and run error: {e}')
+        return False
+
+
+# Download and run file install
+def install_app(file_path, handle):
+    try:
+        # Đường dẫn đến tệp thực thi
+        if os.path.isfile(file_path):
+            install_silent = [file_path, handle]
+
+            subprocess.run(install_silent, shell=True)
+    except Exception as e:
+        print(f'Download and run error: {e}')
+
+# Download and run file install
+def download_exe_file(file_name_exe, download_link, time_wait_download):
+    try:
+
+        # Đường dẫn đến tệp thực thi
+        file_path = os.path.join(download_directory, file_name_exe)
+        if not os.path.isfile(file_path):
+            #Down load thông qua link
+            download_by_link(download_link)
+            sleep(time_wait_download)
+            file_path = get_latest_file()
+        # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
+        return file_path
     except Exception as e:
         print(f'Download and run error: {e}')
         return False

@@ -5,7 +5,7 @@ from common_lib import download_directory, connect_app, check_program_installed,
     get_latest_file, run_file_exe, click_object_by_image
 
 
-def Avast_Free_Antivirus(app_name, file_name_exe, download_link):
+def FiveK_player(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
         result = check_program_installed(app_name)
@@ -13,22 +13,24 @@ def Avast_Free_Antivirus(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 5, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10, 20)
 
         # If download and execute fail -> return fail
         if not download_result:
             return download_result
 
         # Connect app
-        install_path = r'Resource/image/avast antivirus/install.png'
-        click_object_by_image(install_path)
-        sleep(45)
+        target_window = connect_app('5KPlayerinstall')
+        install_path = r'Resource/image/5KPlayer/install.png'
+        click_object_by_image(install_path, 0.8)
+        sleep(10)
+        target_window.close()
+
         # Check app install
         result = check_program_installed(app_name)
-        if result:
-            return result
+        return result
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = Avast_Free_Antivirus('Avast Free Antivirus','thiết_lập_Avast_Free_Antivirus_trực_tuyến.exe','https://www.avast.com/vi-vn/download-thank-you.php?product=FAV-ONLINE-HP&locale=vi-vn&direct=1')
+result = FiveK_player('5KPlayer','5kplayer-setup.exe','https://www.5kplayer.com/download/5kplayer-setup.exe')
 print(result)

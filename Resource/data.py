@@ -11,7 +11,7 @@
 #             }
 
 app_list_data = [
-    ['Ahnlab Safe Transaction', 'https://bank.shinhan.com/sw/astx/astxdn.exe'],
+    ['Ahnlab Safe Transaction', 'readerdc64_ga_cra_install.exe', 'https://bank.shinhan.com/sw/astx/astxdn.exe'],
     ['Adobe Acrobat Reader', 'readerdc64_ga_cra_install.exe', 'https://admdownload.adobe.com/rdcm/installers/live/readerdc64_ga_cra_install.exe'],
     ['Adobe Creative Cloud', 'Creative_Cloud_Set-Up.exe', 'https://prod-rel-ffc-ccm.oobesaas.adobe.com/adobe-ffc-external/core/v1/wam/download?sapCode=KCCC&productName=Creative%20Cloud&os=win&guid=d8738952-724a-4ffa-b844-ae8af08d8259&contextParams=%7B%22component%22%3A%22cc-home%22%2C%22visitor_guid%22%3A%2217544139162251472000750151510417531777%22%2C%22campaign_id%22%3A%2245274%7C92568%7C96659%7C2021-10-cme-1%7C2023-09-apps-catalog-M2%22%2C%22browser%22%3A%22chrome%22%2C%22context_guid%22%3A%227d3c1f19-9cdc-4e58-92fc-6c0f2350c3bd%22%2C%22variation_id%22%3A%22130841%3A45274%7C287164%3A92568%7C299138%3A96659%7Ctest%3A2021-10-cme-1%7Ctest%3A2023-09-apps-catalog-M2%22%2C%22experience_id%22%3A%22na%3A45274%7Cna%3A92568%7Cna%3A96659%7Cna%3A2021-10-cme-1%7Cna%3A2023-09-apps-catalog-M2%22%2C%22planCodeList%22%3A%22cc_free%7Cdc_free%22%2C%22updateCCD%22%3A%22true%22%2C%22secondarySapcodeList%22%3A%22%22%2C%22Product_ID_Promoted%22%3A%22KCCC%22%2C%22userGuid%22%3A%22198278505EBCAAC20A495FB4%40AdobeID%22%2C%22authId%22%3A%22198278505EBCAAC20A495FB4%40AdobeID%22%2C%22contextComName%22%3A%22Organic%3ACCH%22%2C%22contextSvcName%22%3A%22NO-CCD%22%2C%22contextOrigin%22%3A%22Organic%3ACCH%22%2C%22AMCV_D6FAAFAD54CA9F560A4C98A5%2540AdobeOrg%22%3A%22-637568504%257CMCIDTS%257C20144%257CMCMID%257C17544139162251472000750151510417531777%257CMCAAMLH-1741061086%257C3%257CMCAAMB-1741061086%257C6G1ynYcLPuiQxYZrsz_pkqfLG9yMXBpb2zX5dvJdYQJzPXImdj0y%257CMCOPTOUT-1740463486s%257CNONE%257CMCSYNCSOP%257C411-20147%257CvVersion%257C5.1.1%22%2C%22mid%22%3A%2222233660565938630591820048530096679807%22%2C%22aid%22%3A%22%22%2C%22AppMeasurementVersion%22%3A%222.23.0%22%2C%22kaizenTrialDuration%22%3A7%7D&wamFeature=nuj-live&environment=prod&api_key=CCHomeWeb1'],
     ['Alcapture', 'https://advert.estsoft.com/?event=201110311523647', 'https://creativecloud.adobe.com/apps/download/creative-cloud'],
@@ -76,8 +76,16 @@ app_list_data = [
     ['UCWorks', 'UC_Works_setup.exe', 'https://update.ucwaremobile.com/ucportal/UC_Works_setup.exe'],
     ['WeChat', 'WeChatSetup.exe', 'https://dldir1v6.qq.com/weixin/Windows/WeChatSetup.exe'],
     ['Clip Studio', 'CSP_323w_setup.exe', 'https://www.clipstudio.net/ja/purchase/complete_win'],
-    [],
-    [],
+    ['FL Studio', 'flstudio_win64_24.2.2.4597.exe', 'https://support.image-line.com/redirect/flstudio_win_installer?_gl=1*g4ilmg*_gcl_au*NTcxNjY4OTM3LjE3NDA5OTQ1NTg.'],
+    ['Photoscape', 'PhotoScape 3.4.exe', 'https://www.filehorse.com/download/file/sEqp0V5z8oWNsJ9_ZMWSa0uvz5zCCgScHGgKjT_TVv4Krm0BoXah6S7b5zDNxQIBIEg4qnkBxdjdSMC1ZGjR4Q/'],
+    ['Vegas Pro', 'trial_vegaspro22_dlm_je96k4.exe', 'https://dl03.vegascreativesoftware.com/trial_vegaspro22_dlm_je96k4.exe'],
+    ['Wondershare', 'filmora_setup_full6119.exe', 'https://download.wondershare.kr/filmora_full6119.exe'],
+    ['5KPlayer','5kplayer-setup.exe','https://www.5kplayer.com/download/5kplayer-setup.exe'],
+    ['AVG Antivirus Free','avg_antivirus_free_setup.exe','https://www.avg.com/en-us/download-thank-you.php?product=FREEGSR-FAD#pc'],
+    ['Turbo Vaccine','TVIS_R3_M.exe','https://www.turbovaccine.com/TVIS_R3_M.exe'],
+    ['Avast Free Antivirus','thiết_lập_Avast_Free_Antivirus_trực_tuyến.exe','https://www.avast.com/vi-vn/download-thank-you.php?product=FAV-ONLINE-HP&locale=vi-vn&direct=1'],
+    ['Avast Secure Browser', 'avast_secure_browser_setup.exe', 'https://www.softonic.kr/download-launch?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb3dubG9hZFR5cGUiOiJleHRlcm5hbERvd25sb2FkIiwiZG93bmxvYWRVcmwiOiJodHRwczovL2Nkbi1kb3dubG9hZC5hdmFzdGJyb3dzZXIuY29tL3NvZnRvbmljL2F2YXN0X3NlY3VyZV9icm93c2VyX3NldHVwLmV4ZSIsImFwcElkIjoiYTlhMjJlMzgtYTRkNC0xMWU2LTg5NGMtMDAxNjNlZDgzM2U3IiwicGxhdGZvcm1JZCI6IndpbmRvd3MiLCJpYXQiOjE3NDA5NzI0OTcsImV4cCI6MTc0MDk3NjA5N30.dTKBLZf0jWOD2mnKKuEqTHqA1EoEVMre2qPRZgDmHxY'],
+    ['Goclean','gocleansetup152.exe','https://www.gobest.kr/goclean_app/index.htm'],
     [],
     [],
     [],

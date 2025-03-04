@@ -2,7 +2,8 @@ import os
 from time import sleep
 from common_lib import download_directory, connect_app, check_program_installed, \
     download_and_execute, print_all_windows, click_without_id, click_object, download_by_link, click_by_xpath, \
-    get_latest_file, run_file_exe
+    get_latest_file, run_file_exe, click_object_by_image
+
 
 def AVG_Antivirus_Free(app_name, file_name_exe, download_link):
     try:
@@ -17,14 +18,15 @@ def AVG_Antivirus_Free(app_name, file_name_exe, download_link):
         # If download and execute fail -> return fail
         if not download_result:
             return download_result
-        print_all_windows()
-        sleep(10)
+
         # Connect app
-        target_window = connect_app('AVG Antivirus Free')
-        print(target_window.print_control_identifiers())
+        install_path = r'Resource/image/avg antivirus/install.png'
+        click_object_by_image(install_path)
+        sleep(60)
 
         # Check app install
-        return True
+        result = check_program_installed(app_name)
+        return result
     except Exception as e:
         print(f'error app: {e}')
         return False
