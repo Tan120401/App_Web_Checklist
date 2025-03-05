@@ -1,9 +1,6 @@
-from pywinauto import Application
-from pywinauto.keyboard import send_keys
+import subprocess
 
-from common_lib import connect_app, click_without_id, click_without_id_invoke
+from common_lib import base_install_by_microsoft_store
 
-target_window = connect_app('FL Studio 2024 Setup')
-
-click_without_id_invoke(target_window, 'Next >', 'Button')
-click_without_id_invoke(target_window, 'I Agree', 'Button')
+result = base_install_by_microsoft_store('Angry Birds 2')
+print(result)

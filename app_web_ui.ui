@@ -6,21 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
+    <width>727</width>
     <height>547</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Sound Config Test</string>
+   <string>App Web Check List </string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="startBtn">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>20</y>
-      <width>91</width>
-      <height>41</height>
+      <x>210</x>
+      <y>30</y>
+      <width>110</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="text">
@@ -31,9 +31,9 @@
     <property name="geometry">
      <rect>
       <x>40</x>
-      <y>20</y>
-      <width>91</width>
-      <height>41</height>
+      <y>30</y>
+      <width>110</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="text">
@@ -50,17 +50,17 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="openlogBtn">
+   <widget class="QPushButton" name="refreshBtn">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>20</y>
-      <width>91</width>
-      <height>41</height>
+      <x>380</x>
+      <y>30</y>
+      <width>110</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="text">
-     <string>Open Log</string>
+     <string>Refresh</string>
     </property>
    </widget>
   </widget>
@@ -69,7 +69,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>731</width>
+     <width>727</width>
      <height>33</height>
     </rect>
    </property>

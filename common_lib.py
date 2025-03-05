@@ -149,7 +149,6 @@ def click_by_xpath(driver, xpath):
         # print(f'Click by xpath error: {e}')
         return False
 
-
 # Function get folder
 def get_download_folder():
     if platform.system() == "Windows":
@@ -212,6 +211,22 @@ def run_file_exe(file_path):
             print('Tệp chưa được tải xuống thành công.')
     except Exception as e:
         print(f'error run file install: {e}')
+
+# Function open app return target windows
+def open_app(app_name):
+    try:
+        all_window_active = Desktop(backend='uia').windows()
+        for win in all_window_active:
+            if win.window_text() == app_name:
+                close_app(app_name)
+
+        open(app_name, match_closest=False)
+        sleep(3)
+        app = Application(backend='uia').connect(title_re=app_name)
+        target_window = app.window(title_re=app_name)
+        return target_window
+    except Exception as e:
+        print(f'open app error: {e}')
 
 # Function close app
 def close_app(app_name):
@@ -306,6 +321,32 @@ def click_without_id(window, title, control_type):
     sleep(1)
     return result
 
+# Function click object exist
+def click_app_without_id(window, title, control_type):
+    object_select = window.child_window(title_re=f'{title}. .*', control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
+        object_select.click_input()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
+
+# Function click object exist
+def click_input_without_id(window, title, control_type):
+    object_select = window.child_window(title=title, control_type=control_type)
+    try:
+        wait_until(5, 1, lambda: object_select.exists())
+        object_select.click_input()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
+
 # Function click without title
 def click_without_title(window, auto_id, control_type):
     object_select = window.child_window(auto_id=auto_id, control_type=control_type)
@@ -328,6 +369,17 @@ def find_object(window, title, auto_id, control_type):
     except Exception as e:
         print(f'Find Object error: {title, e}')
         result = [False, title, None]
+    return result
+
+# Function find object
+def find_object_without_id(window, title, control_type):
+    object_find = window.child_window(title=title, control_type=control_type)
+    try:
+        wait_until(5, 0.5, lambda: object_find.exists())
+        result = True
+    except Exception as e:
+        print(f'Find Object error: {title, e}')
+        result = False
     return result
 
 import winreg
@@ -369,6 +421,52 @@ def check_program_installed(program_name):
             sub_key.Close()
 
     return False
+
+#Check app installed by microsoft
+def is_app_installed(app_name):
+    try:
+        # Chạy PowerShell để lấy danh sách các ứng dụng đã cài đặt
+        command = "powershell Get-StartApps"
+        result = subprocess.run(command, capture_output=True, text=True, shell=True)
+
+        # Xử lý kết quả để kiểm tra tên hiển thị
+        appname = app_name.replace(' ', '')
+        installed_apps = result.stdout.lower()  # Đưa toàn bộ kết quả về chữ thường
+        if appname.lower() in installed_apps:  # Kiểm tra nếu tên ứng dụng tồn tại
+            return True
+        return False
+    except Exception as e:
+        print("Error:", e)
+        return False
+
+#Check exist app
+def check_app_existed(app_name):
+    import subprocess
+
+    # PowerShell command to get the list of installed apps
+    command_get_app_list = ["powershell", "-Command", "Get-StartApps"]
+
+    # Run the command with text mode, UTF-8 encoding, and error handling
+    result = subprocess.run(command_get_app_list, capture_output=True, text=True, encoding='utf-8', errors='replace')
+    if result.stderr:
+        print("Errors:", result.stderr)
+
+    # Split the output into a list of app names
+    app_list = result.stdout.strip().split('\n')
+
+    # Normalize app_name by removing spaces
+    app_name_temp = app_name.replace(' ', '')
+
+    # Iterate through the app list to find a match
+    for each_app in app_list:
+        if app_name_temp in each_app or app_name in each_app:
+            # If a match is found, extract the app ID (text after the last space)
+            app_id = each_app.strip().split()[-1]
+            # print(f"App existed. Found app ID: {app_id}")
+            return app_id
+
+    # Return None if no match is found
+    return None
 
 #Check app install 64 bit
 def check_app_installed(app_name):
@@ -413,14 +511,12 @@ def download_and_execute(file_name_exe, download_link, time_wait_download, time_
         print(f'Download and run error: {e}')
         return False
 
-
 # Download and run file install
 def install_app(file_path, handle):
     try:
         # Đường dẫn đến tệp thực thi
         if os.path.isfile(file_path):
             install_silent = [file_path, handle]
-
             subprocess.run(install_silent, shell=True)
     except Exception as e:
         print(f'Download and run error: {e}')
@@ -441,3 +537,47 @@ def download_exe_file(file_name_exe, download_link, time_wait_download):
     except Exception as e:
         print(f'Download and run error: {e}')
         return False
+
+# Function click element in group
+def click_object_within_group(group, name, auto_id, control_type):
+    # get all element
+    child_elements = group.descendants(control_type=control_type)
+    # find elements
+    for element in child_elements:
+        if element.window_text() == name and element.automation_id() == auto_id:
+            return element.click_input()
+    return False
+
+#Download app by microsoft store
+def base_install_by_microsoft_store(app_name):
+    #Check app installed
+    if check_app_existed(app_name):
+        return True
+
+    #Open Microsoft Store
+    target_window = open_app('Microsoft Store')
+    click_input_without_id(target_window, 'Search', 'Group')
+
+    #Input app name and search
+    key_search = app_name.lower()
+    pyautogui.write(key_search, interval=0.05)
+    pyautogui.press('enter')
+    sleep(3)
+
+    #Select the searched app
+    click_app_without_id(target_window, app_name, 'Button')
+    sleep(2)
+
+    #Click install or get
+    click_install = click_input_without_id(target_window, 'Install ' , 'Button')
+    if not click_install[0]:
+        click_get = click_input_without_id(target_window, 'Get ', 'Button')
+
+    #Check installation success by button change to open
+    open_button = False
+    for i in range(100):
+        target_window = connect_app('Microsoft Store')
+        sleep(5)
+        open_button = target_window.child_window(auto_id = 'OpenInstalledProduct', control_type = 'Button')
+        if open_button.exists():
+            return True

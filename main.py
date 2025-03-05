@@ -9,6 +9,8 @@ from PyQt6.QtWidgets import QMainWindow, QApplication, QHeaderView, QStyledItemD
 
 from Resource.data import app_list_data
 from app_web_ui import Ui_mainWindow
+from common_lib import base_install_by_microsoft_store
+
 
 #Class css text center
 class CenterAlignDelegate(QStyledItemDelegate):
@@ -66,7 +68,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         self.ui.tableResult.cellChanged.connect(self.onCellChanged)
         self.ui.startBtn.clicked.connect(self.on_clicked_start)
         self.ui.selectallBtn.clicked.connect(self.uncheckAllCheckBoxes)
-        self.ui.openlogBtn.clicked.connect(self.open_log_folder)
 
     # Function init ui
     def init_ui(self):
@@ -118,8 +119,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                 tablewidget.setItem(index, 0, checkbox_item)
 
                 tablewidget.setItem(index, 1, QTableWidgetItem(app_info[0]))
-            # Merger col test case detail
-            tablewidget.setSpan(0, 3, len(self.app_list_info), 1)
         except Exception as e:
             print(e)
 
@@ -159,27 +158,29 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     def start_handle_testcase(self):
         if self.current_index >= len(self.threads) or not self.threads[self.current_index]._is_running:
             return
-        file_name = self.app_list_info[self.current_index][0] # Tên file để import hàm
-        testcase = file_name.replace(" ", "_") # Chuyển dấu cách thành dấu _
+        result = False
 
-        module = importlib.import_module(file_name)
-        # print('module: ', module)
-        testcase_function = getattr(module, testcase)
-        # print('test case function: ', testcase)
+        #If download by microsoft store
+        if self.app_list_info[self.current_index][2] == 'Microsoft Store':
+            app_name = self.app_list_info[self.current_index][0]
+            result = base_install_by_microsoft_store(app_name)
 
-        # Truyền tham số filename exe và download link cho hàm thực hiện test case
-        result = testcase_function(self.app_list_info[self.current_index][0], self.app_list_info[self.current_index][1], self.app_list_info[self.current_index][2])
+        #Download by web
+        else:
+            file_name = self.app_list_info[self.current_index][0] # Tên file để import hàm
+            testcase = file_name.replace(" ", "_") # Chuyển dấu cách thành dấu _
+
+            module = importlib.import_module(file_name)
+            testcase_function = getattr(module, testcase)
+
+            # Truyền tham số filename exe và download link cho hàm thực hiện test case
+            result = testcase_function(self.app_list_info[self.current_index][0], self.app_list_info[self.current_index][1], self.app_list_info[self.current_index][2])
         # print(f'result {testcase}: {result}')
         if result:
             self.reload_row_data('PASS', self.current_index, 2)
             # self.testcase_result_report.append("PASS")
         else:
             self.reload_row_data('FAIL', self.current_index, 2)
-            # self.testcase_result_report.append("FAIL")
-        # self.testcase_name_report.append(testcase)
-
-        #Write result to excel file
-        # write_result_report(self.testcase_name_report, self.testcase_result_report, self.init_file_name[1])
 
     # Function finish handle test case
     def on_thread_finished(self):
@@ -193,22 +194,22 @@ class MainWindow(QMainWindow, Ui_mainWindow):
             self.app_list_info = self.app_selected
             self.current_index = 0
             self.is_selected = False
+
     # Change status check
     def onCellChanged(self, row, col):
         if col == 0 and not self.is_selected:
             item = self.ui.tableResult.item(row, col)
             box_check = item.checkState()
             self.ui.tableResult.blockSignals(True)
-            print('da vao day')
             if box_check == Qt.CheckState.Checked:
                 #Select show download link
                 self.app_selected.append(self.app_list_info[row])
                 detail = self.app_list_info[row][2]
                 detail_testcase = QTableWidgetItem(detail)
-                self.ui.tableResult.setItem(0, col + 3, detail_testcase)
+                self.ui.tableResult.setItem(row, col + 3, detail_testcase)
             else:
                 self.app_selected.remove(self.app_list_info[row])
-                self.ui.tableResult.setItem(0, col + 3, QTableWidgetItem(""))
+                self.ui.tableResult.setItem(row, col + 3, QTableWidgetItem(""))
             self.ui.tableResult.blockSignals(False)
 
             checkbox_status = self.areAllCheckBoxesChecked()
@@ -314,19 +315,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                     }
                 """)
         msg.exec()
-
-    # Function open log folder
-    def open_log_folder(self):
-        try:
-            if hasattr(sys, 'frozen'):
-                path_file = os.path.dirname(sys.executable)
-            else:
-                # Đường dẫn của thư mục chứa file script đang chạy
-                path_file = os.path.dirname(os.path.abspath(__file__))
-            os.startfile(path_file)
-            print(path_file)
-        except Exception as e:
-            print(f'Open log file error: {e}')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
