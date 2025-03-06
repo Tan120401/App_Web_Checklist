@@ -338,7 +338,7 @@ def click_app_without_id(window, title, control_type):
 def click_input_without_id(window, title, control_type):
     object_select = window.child_window(title=title, control_type=control_type)
     try:
-        wait_until(5, 1, lambda: object_select.exists())
+        wait_until(3, 1, lambda: object_select.exists())
         object_select.click_input()
         result = [True, title, object_select]
     except TimeoutError as e:
@@ -560,7 +560,7 @@ def base_install_by_microsoft_store(app_name):
 
     #Input app name and search
     key_search = app_name.lower()
-    pyautogui.write(key_search, interval=0.05)
+    pyautogui.write(key_search, interval=0.01)
     pyautogui.press('enter')
     sleep(3)
 
@@ -574,10 +574,10 @@ def base_install_by_microsoft_store(app_name):
         click_get = click_input_without_id(target_window, 'Get ', 'Button')
 
     #Check installation success by button change to open
-    open_button = False
     for i in range(100):
         target_window = connect_app('Microsoft Store')
         sleep(5)
         open_button = target_window.child_window(auto_id = 'OpenInstalledProduct', control_type = 'Button')
-        if open_button.exists():
+        disable_install = target_window.child_window(auto_id="InstalledActionDisabled", control_type="Button")
+        if open_button.exists() or disable_install.exists():
             return True
