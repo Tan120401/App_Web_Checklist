@@ -14,12 +14,11 @@ def Ahnlab_Safe_Transaction(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 90)
+        download_result = download_and_execute(file_name_exe, download_link, 90)
 
         # If download and execute fail -> return fail
         if not download_result:
             return download_result
-
 
         #Connect app
         target_window = connect_app('AhnLab Safe Transaction Setup')
@@ -30,11 +29,10 @@ def Ahnlab_Safe_Transaction(app_name, file_name_exe, download_link):
         for i in range(24):
             result = check_program_installed(app_name)
             if result:
+                target_window.close()
                 return result
-            sleep(5)
+            sleep(10)
     except Exception as e:
         print(f'App handle error: {e}')
         return  False
 
-result = Ahnlab_Safe_Transaction('Ahnlab Safe Transaction', 'astxdn.exe', 'https://bank.shinhan.com/sw/astx/astxdn.exe')
-print(result)

@@ -48,8 +48,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         super().__init__()
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
-        self.testcase_name = [] #All test case
-        self.testcase_detail = [] #Detail test case
 
         #init test case name and detail
         self.app_list_info = app_list_data
@@ -68,7 +66,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         self.ui.tableResult.cellChanged.connect(self.onCellChanged)
         self.ui.startBtn.clicked.connect(self.on_clicked_start)
         self.ui.selectallBtn.clicked.connect(self.uncheckAllCheckBoxes)
-
+        self.ui.refreshBtn.clicked.connect(self.refresh_data)
     # Function init ui
     def init_ui(self):
         try:
@@ -132,8 +130,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
             self.app_list_info = app_list_data
         else:
             self.app_list_info = self.app_selected
-            print('test case name when click start: ', self.app_list_info[self.current_index])
-
             self.is_selected = True
             self.init_ui()
             self.run_next_testcase()
@@ -189,8 +185,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
         if self.current_index < len(self.app_list_info):
             self.run_next_testcase()
         else:
-            # self.show_notification('Successfully test case!')
-            # self.testcase_name = data_testcase['test case']
             self.app_list_info = self.app_selected
             self.current_index = 0
             self.is_selected = False
@@ -198,6 +192,7 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     # Change status check
     def onCellChanged(self, row, col):
         if col == 0 and not self.is_selected:
+            print('da vao day')
             item = self.ui.tableResult.item(row, col)
             box_check = item.checkState()
             self.ui.tableResult.blockSignals(True)
@@ -315,6 +310,22 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                     }
                 """)
         msg.exec()
+
+    #Function refresh data
+    def refresh_data(self):
+
+        # init test case name and detail
+        self.app_list_info = app_list_data
+
+        self.app_selected = []  # all test case selected
+        self.current_index = 0  # test case index
+        self.threads = []
+
+        # Flag to control selected
+        self.is_selected = True
+
+        self.init_ui()  # init ui
+        self.ui.tableResult.blockSignals(False)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

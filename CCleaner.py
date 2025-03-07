@@ -26,8 +26,7 @@ def CCleaner(app_name, file_name_exe, download_link):
             result = check_program_installed(app_name)
             if result:
                 return result
-            print('ket qua:', result)
-            sleep(5)
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False

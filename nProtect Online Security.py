@@ -14,7 +14,7 @@ def nProtect_Online_Security(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 20)
 
         # If download and excute fail -> return fail
         if not download_result:
@@ -25,10 +25,13 @@ def nProtect_Online_Security(app_name, file_name_exe, download_link):
 
         #Click install
         click_object(target_window, 'Install', '1', 'Button')
-        sleep(12)
-        # # Kiem tra xem da cai dat thanh cong hay chua
-        result = check_program_installed('nProtect Online Security')
-        return result
+
+        # Check app installed
+        for i in range(36):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

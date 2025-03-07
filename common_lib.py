@@ -172,26 +172,75 @@ def get_latest_file():
         time.sleep(1)
 
 # Function download app by link
-def download_by_link(link):
+def download_by_link(link, timeout = 3600):
+    # Xác định thư mục Downloads
+    download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+
     # Tạo tùy chọn cho Chrome
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument('--ignore-certificate-errors')
     chrome_options.add_argument('--ignore-ssl-errors')
-    # Cấu hình bỏ qua xác nhận người dùng, tự động down load về folder down load
-    prefs = {"download.default_directory": "Downloads",
-             "download.prompt_for_download": False,  # Chrome sẽ không hiện cửa sổ xác nhận trước khi tải xuống tệp.
-             "profile.default_content_setting_values.automatic_downloads": 1,
-             # cho phép tải xuống tự động mà không bị chặn.
-             "safebrowsing.enabled": True}  # kích hoạt tính năng Bảo mật An toàn (Safe Browsing) của Chrome
+
+    # Cấu hình bỏ qua xác nhận người dùng, tự động tải xuống về thư mục Downloads
+    prefs = {
+        "download.default_directory": download_dir,
+        "download.prompt_for_download": False,
+        "profile.default_content_setting_values.automatic_downloads": 1,
+        "safebrowsing.enabled": True
+    }
     chrome_options.add_experimental_option("prefs", prefs)
 
     # Khởi tạo trình điều khiển cho Chrome
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
-    # Mở một trang web
-    driver.get(link)
-    return driver
+    try:
+        # Lấy danh sách các tệp trong thư mục Downloads trước khi tải xuống
+        files_before = set(os.listdir(download_dir))
+
+        # Mở liên kết để bắt đầu tải xuống
+        driver.get(link)
+        print(f"Đã bắt đầu tải xuống từ: {link}")
+
+        # Đợi cho đến khi có tệp mới trong thư mục Downloads
+        start_time = time.time()
+        downloaded_file = None
+        downloading_extensions = [".crdownload", ".tmp", ".partial"]
+
+        while time.time() - start_time < timeout:
+            # Kiểm tra các tệp hiện tại
+            files_now = set(os.listdir(download_dir))
+            new_files = files_now - files_before
+
+            # Kiểm tra xem có tệp đang tải không
+            downloading_files = [f for f in new_files if any(f.endswith(ext) for ext in downloading_extensions)]
+
+            # Kiểm tra xem có tệp đã tải xuống hoàn tất không
+            completed_files = [f for f in new_files if not any(f.endswith(ext) for ext in downloading_extensions)]
+
+            if downloading_files:
+                print(f"Đang tải xuống: {downloading_files}")
+
+            if completed_files:
+                downloaded_file = completed_files[0] if completed_files else None
+                if downloaded_file:
+                    print(f"Tải xuống hoàn tất: {downloaded_file}")
+                    break
+
+            # Tạm dừng một chút trước khi kiểm tra lại
+            time.sleep(10)
+
+        if downloaded_file:
+            print(f"Tải xuống thành công: {os.path.join(download_dir, downloaded_file)}")
+            return True
+        else:
+            print("Hết thời gian chờ hoặc không phát hiện tệp tải xuống")
+            return False
+
+    finally:
+        # Đảm bảo driver luôn được đóng dù có lỗi hay không
+        print("Đóng trình duyệt Chrome...")
+        driver.quit()
 
 # Run file exe
 # Kiểm tra lại xem tệp đã tồn tại chưa
@@ -212,6 +261,22 @@ def run_file_exe(file_path):
     except Exception as e:
         print(f'error run file install: {e}')
 
+def run_file_exe_by_run(file_path):
+    try:
+        # subprocess.run sẽ chờ cho tiến trình con chạy xong
+        # subprocess.Popen chỉ chạy file exe mà không chờ các tiến trình con chạy xong
+        if os.path.isfile(file_path):
+            print(f'Tệp đã được tải xuống. {file_path} Đang chạy tệp...')
+            if platform.system() == "Windows":
+                process =  subprocess.run(f'"{file_path}"', shell=True)
+            elif platform.system() == "Darwin":
+                process =  subprocess.run(["open", file_path])
+            else:
+                process =  subprocess.run(["xdg-open", file_path])
+        else:
+            print('Tệp chưa được tải xuống thành công.')
+    except Exception as e:
+        print(f'error run file install: {e}')
 # Function open app return target windows
 def open_app(app_name):
     try:
@@ -300,7 +365,7 @@ def click_object_by_index(window, title, control_type, index):
         object_selects = window.descendants(title=title, control_type=control_type)
         object_select = object_selects[index]
         wait_until(5, 1, lambda: object_select.is_visible())
-        object_select.invoke()
+        object_select.click_input()
         result = [True, title, object_select]
     except Exception as e:
         print(f"Error clicking object: {e}")
@@ -313,7 +378,7 @@ def click_without_id(window, title, control_type):
     object_select = window.child_window(title=title, control_type=control_type)
     try:
         wait_until(5, 1, lambda: object_select.exists())
-        object_select.invoke()
+        object_select.click_input()
         result = [True, title, object_select]
     except TimeoutError as e:
         print(f'Click error: {e}')
@@ -494,7 +559,7 @@ def print_all_windows():
         print(win.window_text())
 
 # Download and run file install
-def download_and_execute(file_name_exe, download_link, time_wait_download, time_wait_execute):
+def download_and_execute(file_name_exe, download_link, time_wait_execute):
     try:
 
         # Đường dẫn đến tệp thực thi
@@ -502,7 +567,7 @@ def download_and_execute(file_name_exe, download_link, time_wait_download, time_
         if not os.path.isfile(file_path):
             #Down load thông qua link
             download_by_link(download_link)
-            sleep(time_wait_download)
+
         # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
         run_file_exe(file_path)
         sleep(time_wait_execute)
@@ -522,7 +587,7 @@ def install_app(file_path, handle):
         print(f'Download and run error: {e}')
 
 # Download and run file install
-def download_exe_file(file_name_exe, download_link, time_wait_download):
+def download_exe_file(file_name_exe, download_link):
     try:
 
         # Đường dẫn đến tệp thực thi
@@ -530,7 +595,6 @@ def download_exe_file(file_name_exe, download_link, time_wait_download):
         if not os.path.isfile(file_path):
             #Down load thông qua link
             download_by_link(download_link)
-            sleep(time_wait_download)
             file_path = get_latest_file()
         # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
         return file_path

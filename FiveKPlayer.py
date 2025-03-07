@@ -5,10 +5,10 @@ from common_lib import download_directory, connect_app, check_program_installed,
     get_latest_file, run_file_exe, click_object_by_image
 
 
-def FiveK_player(app_name, file_name_exe, download_link):
+def FiveKPlayer(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
-        result = check_program_installed(app_name)
+        result = check_program_installed('5KPlayer')
         if result:
             return result
 
@@ -26,11 +26,12 @@ def FiveK_player(app_name, file_name_exe, download_link):
         sleep(10)
         target_window.close()
 
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = FiveK_player('5KPlayer','5kplayer-setup.exe','https://www.5kplayer.com/download/5kplayer-setup.exe')
-print(result)

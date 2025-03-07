@@ -4,10 +4,10 @@ from pywinauto import Desktop
 from pywinauto.findwindows import find_windows
 
 from common_lib import check_program_installed, print_all_windows, run_file_exe, check_app_installed, \
-    check_app_installed_32
+    check_app_installed_32, check_app_existed
 
-# result = check_program_installed('알송')
-# print(result)
+result = check_program_installed('CrossWeb EX')
+print(result)
 
 # def IPinsideLWS():
 #     try:
@@ -37,7 +37,7 @@ from common_lib import check_program_installed, print_all_windows, run_file_exe,
 #         print(f'error install: {e}')
 #         return False
 
-print_all_windows()
+# print_all_windows()
 
 
 # from pywinauto import Application, Desktop
@@ -63,5 +63,10 @@ print_all_windows()
 # print(result)
 
 
-
+# Check app installed
+for i in range(36):
+    result = check_program_installed(app_name)
+    if result:
+        return result
+    sleep(10)
 

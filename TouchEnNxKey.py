@@ -14,18 +14,19 @@ def TouchEnNxKey(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 60, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and excute fail -> return fail
         if not download_result:
             return download_result
 
-        # Kết nối tới màn hình cài đặt app
-        close_app('TouchEn nxKey')
-
-        # Kiem tra xem da cai dat thanh cong hay chua
-        result = check_program_installed('TouchEn nxKey')
-        return result
+        # Check app installed
+        for i in range(36):
+            result = check_program_installed('TouchEn nxKey')
+            if result:
+                close_app('TouchEn nxKey')
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
