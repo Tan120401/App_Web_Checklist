@@ -13,7 +13,7 @@ def AVG_Antivirus_Free(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -22,13 +22,13 @@ def AVG_Antivirus_Free(app_name, file_name_exe, download_link):
         # Connect app
         install_path = r'Resource/image/avg antivirus/install.png'
         click_object_by_image(install_path)
-        sleep(60)
 
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = AVG_Antivirus_Free('AVG Antivirus Free','avg_antivirus_free_setup.exe','https://www.avg.com/en-us/download-thank-you.php?product=FREEGSR-FAD#pc')
-print(result)

@@ -12,7 +12,7 @@ def Ahnlab_V3_Lite(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 30)
+        download_result = download_and_execute(file_name_exe, download_link, 30)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -26,10 +26,13 @@ def Ahnlab_V3_Lite(app_name, file_name_exe, download_link):
         click_without_id(target_window, 'I agree', 'CheckBox')
         click_without_id(target_window, 'Next >', 'Button')
         click_without_id(target_window, 'Install', 'Button')
-        # Check app install
-        return True
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = Ahnlab_V3_Lite('Ahnlab V3 Lite','V3_Lite_Setup.exe','https://provide.ahnlab.com/v3lite/v40/download/V3_Lite_Setup.exe')
-print(result)

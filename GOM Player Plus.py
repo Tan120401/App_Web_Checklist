@@ -11,7 +11,7 @@ def GOM_Player_Plus(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -28,14 +28,13 @@ def GOM_Player_Plus(app_name, file_name_exe, download_link):
         click_object(setup_window, 'Next >', '1', 'Button')
         click_object(setup_window, 'Install', '1', 'Button')
         click_object(setup_window, 'Finish', '1', 'Button')
-        #Wait for download
-        sleep(12)
-        # Check app install
-        result = check_program_installed('GOM Player+')
 
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed('GOM Player+')
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = GOM_Player_Plus('GOM Player Plus', 'GOMPLAYERPLUS2024SETUP_NEW.EXE','https://cdn2.gomlab.com/gretech/gomplayerplus/GOMPLAYERPLUS2024SETUP_NEW.EXE')
-print(result)

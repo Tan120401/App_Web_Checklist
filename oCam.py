@@ -2,7 +2,7 @@ import os
 from time import sleep
 from common_lib import download_directory, connect_app, check_program_installed, \
     download_and_execute, print_all_windows, click_without_id, click_object, download_by_link, click_by_xpath, \
-    get_latest_file, run_file_exe
+    get_latest_file, run_file_exe, get_link
 
 
 def oCam(app_name, file_name_exe, download_link):
@@ -15,7 +15,7 @@ def oCam(app_name, file_name_exe, download_link):
         file_path = os.path.join(download_directory, file_name_exe)
         if not os.path.isfile(file_path):
             # Download by link
-            driver = download_by_link(download_link)
+            driver = get_link(download_link)
 
             # Click Download
             click_by_xpath(driver, '/html/body/table[2]/tbody/tr[1]/td[3]/button')
@@ -33,10 +33,13 @@ def oCam(app_name, file_name_exe, download_link):
         target_window = connect_app('Setup - oCam')
         click_without_id(target_window, 'I accept the agreement', 'RadioButton')
         click_without_id(target_window, 'Next >', 'Button')
-        sleep(10)
-        #Check install app
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False

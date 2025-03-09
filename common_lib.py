@@ -1,12 +1,10 @@
-import codecs
 import os
 import platform
 import time
-from datetime import datetime
 from time import sleep
 import subprocess
+import winreg
 
-import pandas as pd
 import pyautogui
 from AppOpener import open
 from pywinauto import Application, Desktop
@@ -19,84 +17,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-
-# Function to write logs
-def write_log(testcase_name,pass_list, fail_list, log_file_name):
-    # Open log file and write
-    try:
-        log_folder = 'Log_folder_Sound_Config'
-        if not os.path.exists(log_folder):
-            os.makedirs(log_folder)
-
-        # Full path for the log file
-        log_file_path = os.path.join(log_folder, log_file_name)
-        with codecs.open(f"{log_file_path}", "a", "utf-8") as file:
-            file.write(f"*{testcase_name.upper()}\n")
-            file.write("-List of pass: \n")
-            file.write("\n".join(pass_list))
-            file.write("\n")
-            if len(fail_list) > 0:
-                file.write("-List of fail: \n")
-                file.write("\n".join(fail_list))
-                file.write("\n")
-            file.write("-------------------------------------------------------------------------\n")
-    except Exception as e:
-        print(f'Write log error: {e}')
-
-# Function init log file
-def init_log_file():
-    # change_global_log_file()
-    now = datetime.now()
-    current_time = now.strftime('%m%d%Y_%H%M%S')
-    print(current_time)
-    global log_file_name
-    log_file_name = f"{current_time}_SOUND_CONFIG.txt"
-
-    # check setting log exists
-    if os.path.exists(log_file_name):
-        try:
-            # delete file
-            os.remove(log_file_name)
-            print(f"Deleted existing log file: {log_file_name}")
-            return log_file_name
-        except Exception as e:
-            print(f"Error deleting log file: {e}")
-    try:
-        # Khởi tạo lại file log
-        with codecs.open(log_file_name, "w", "utf-8") as file:
-            file.write("")  # Tạo file rỗng
-        print(f"Initialized new log file: {log_file_name}")
-        return log_file_name
-    except Exception as e:
-        print(f"Error initializing log file: {e}")
-
-# Function init report file name
-def init_file_name():
-    now = datetime.now()
-    current_time = now.strftime('%m%d%Y_%H%M%S')
-    report_file_name = f"{current_time}_SOUND_CONFIG_REPORT.xlsx"
-    log_file_name = f"{current_time}_SOUND_CONFIG_REPORT.txt"
-    return [log_file_name, report_file_name]
-
-#Function write result to excel file
-def write_result_report(testcase_name, result, report_file_name):
-    log_folder = 'Log_folder_Sound_Config'
-    if not os.path.exists(log_folder):
-        os.makedirs(log_folder)
-
-    # Full path for the log file
-    log_file_path = os.path.join(log_folder, report_file_name)
-    data_report = {
-        'Test Case': testcase_name,
-        'Result': result
-    }
-    df = pd.DataFrame(data_report)
-
-    df.to_excel(log_file_path, sheet_name='Sound Config', index=False, engine='openpyxl')
-
-    # Read back the file to verify
-    dfread = pd.read_excel(log_file_path, sheet_name='Sound Config')
-    print(dfread)
 
 #Function click by id
 def click_by_id(driver, id):
@@ -242,8 +162,34 @@ def download_by_link(link, timeout = 3600):
         print("Đóng trình duyệt Chrome...")
         driver.quit()
 
+# Function download app by link
+def get_link(link):
+    # Xác định thư mục Downloads
+    download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+
+    # Tạo tùy chọn cho Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--ignore-ssl-errors')
+
+    # Cấu hình bỏ qua xác nhận người dùng, tự động tải xuống về thư mục Downloads
+    prefs = {
+        "download.default_directory": download_dir,
+        "download.prompt_for_download": False,
+        "profile.default_content_setting_values.automatic_downloads": 1,
+        "safebrowsing.enabled": True
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
+
+    # Khởi tạo trình điều khiển cho Chrome
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    driver.get(link)
+    return driver
+
+
 # Run file exe
-# Kiểm tra lại xem tệp đã tồn tại chưa
 def run_file_exe(file_path):
     try:
         # subprocess.run sẽ chờ cho tiến trình con chạy xong
@@ -277,6 +223,7 @@ def run_file_exe_by_run(file_path):
             print('Tệp chưa được tải xuống thành công.')
     except Exception as e:
         print(f'error run file install: {e}')
+
 # Function open app return target windows
 def open_app(app_name):
     try:
@@ -447,8 +394,6 @@ def find_object_without_id(window, title, control_type):
         result = False
     return result
 
-import winreg
-
 # Check App and program installed
 def check_program_installed(program_name):
     # Mở khóa registry chính của các chương trình cài đặt trên hệ thống 64-bit
@@ -528,7 +473,7 @@ def check_app_existed(app_name):
             # If a match is found, extract the app ID (text after the last space)
             app_id = each_app.strip().split()[-1]
             # print(f"App existed. Found app ID: {app_id}")
-            return app_id
+            return True
 
     # Return None if no match is found
     return None

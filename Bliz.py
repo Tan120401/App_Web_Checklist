@@ -12,18 +12,18 @@ def Bliz(app_name, file_name_exe, download_link):
             return result
 
         #Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         #If download and excute fail -> return fail
         if not download_result:
             return download_result
 
-        #Wait for installation
-        sleep(20)
-
-        #Check app is installed
-        result = check_app_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_app_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

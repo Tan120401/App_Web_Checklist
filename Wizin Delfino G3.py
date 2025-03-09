@@ -24,6 +24,7 @@ def Wizin_Delfino_G3(app_name, file_name_exe, download_link):
 
         #Click next
         click_without_id(target_window, 'Next >', 'Button')
+
         # Check app installed
         for i in range(24):
             result = check_program_installed('Delfino G3')

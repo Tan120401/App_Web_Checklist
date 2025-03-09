@@ -13,7 +13,7 @@ def Formtec_designpro9(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -34,8 +34,12 @@ def Formtec_designpro9(app_name, file_name_exe, download_link):
         target_window = connect_app('Setup')
         click_without_id(target_window, 'Yes', 'Button')
 
-        # Check app install
-        return True
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

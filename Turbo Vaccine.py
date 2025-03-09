@@ -13,7 +13,7 @@ def Turbo_Vaccine(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 120, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -34,10 +34,12 @@ def Turbo_Vaccine(app_name, file_name_exe, download_link):
         click_without_id(target_window, 'Finish', 'Button')
         click_without_id(target_window, 'OK', 'Button')
 
-        # Check app install
-        result = check_program_installed(app_name)
-        if result:
-            return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False

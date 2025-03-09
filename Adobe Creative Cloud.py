@@ -13,7 +13,7 @@ def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 120)
+        download_result = download_and_execute(file_name_exe, download_link, 120)
 
         # If download and excute fail -> return fail
         if not download_result:
@@ -27,10 +27,13 @@ def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
         click_without_id(target_window, 'Start installing', 'Button')
         click_without_id(target_window, 'Skip question', 'Button')
         click_without_id(target_window, 'Skip question', 'Button')
-        sleep(90)
-        # Kiem tra xem da cai dat thanh cong hay chua
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

@@ -1,8 +1,7 @@
-
+from time import sleep
 
 from common_lib import download_by_link, run_file_exe, connect_app, download_and_execute, check_program_installed, \
     click_object, click_without_title
-
 
 def Genshin_Impact(app_name, file_name_exe, download_link):
     try:
@@ -12,7 +11,7 @@ def Genshin_Impact(app_name, file_name_exe, download_link):
             return result
 
         #Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 30, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         #If download and excute fail -> return fail
         if not download_result:
@@ -30,9 +29,12 @@ def Genshin_Impact(app_name, file_name_exe, download_link):
         # wait install
         sleep(10)
 
-        #Check app is installed
-        result = check_program_installed('HoYoPlay')
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed('HoYoPlay')
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

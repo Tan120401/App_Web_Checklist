@@ -4,7 +4,6 @@ from common_lib import download_directory, connect_app, check_program_installed,
     download_and_execute, print_all_windows, click_without_id, click_object, download_by_link, click_by_xpath, \
     get_latest_file, run_file_exe, click_object_by_image
 
-
 def FiveKPlayer(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
@@ -13,7 +12,7 @@ def FiveKPlayer(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 20)
+        download_result = download_and_execute(file_name_exe, download_link, 20)
 
         # If download and execute fail -> return fail
         if not download_result:

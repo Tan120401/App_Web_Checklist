@@ -5,7 +5,6 @@ from time import sleep
 from common_lib import download_by_link, run_file_exe, download_and_execute, connect_app, check_program_installed, \
     click_object, click_without_id, click_object_by_index
 
-
 def Gom_Audio(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
@@ -14,7 +13,7 @@ def Gom_Audio(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and excute fail -> return fail
         if not download_result:
@@ -34,10 +33,13 @@ def Gom_Audio(app_name, file_name_exe, download_link):
         click_object(setup_window, 'Next >', '1', 'Button')
         click_object(setup_window, 'Next >', '1', 'Button')
         click_object_by_index(setup_window, 'Close', 'Button', 0)
-        print(setup_window.print_control_identifiers())
-        # Kiem tra xem da cai dat thanh cong hay chua
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

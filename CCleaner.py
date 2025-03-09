@@ -13,7 +13,7 @@ def CCleaner(app_name, file_name_exe, download_link):
             return result
 
         # Download file
-        file_path = download_exe_file(file_name_exe, download_link, 20)
+        file_path = download_exe_file(file_name_exe, download_link)
         if file_path:
             # Install app
             install_app(file_path, "/S")
@@ -30,5 +30,3 @@ def CCleaner(app_name, file_name_exe, download_link):
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = CCleaner('CCleaner','ccsetup633.exe','https://www.ccleaner.com/ccleaner/download/standard')
-print(result)

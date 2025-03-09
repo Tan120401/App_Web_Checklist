@@ -39,17 +39,12 @@ def GOOSE_GOOSE_DUCK(app_name, file_name_exe, link):
         click_without_id(target_window, 'Next', 'Button')
         click_without_id(target_window, 'Finish', 'Button')
 
-        #Click checkbox
-
-        # wait install
-        sleep(120)
-
-        #Check app is installed
-        result = check_program_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-
-result = GOOSE_GOOSE_DUCK('GOOSE GOOSE DUCK', 'Goose Goose Duck Installer 3.14.01 release.exe', 'https://gaggle.fun/goose-goose-duck')
-print(result)

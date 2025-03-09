@@ -13,6 +13,7 @@ def Polaris_Office(app_name, file_name_exe, download_link):
         result = check_program_installed(app_name)
         if result:
             return result
+
         file_path = os.path.join(download_directory, file_name_exe)
         if not os.path.isfile(file_path):
             # Download file
@@ -33,7 +34,12 @@ def Polaris_Office(app_name, file_name_exe, download_link):
         target_window = connect_app('Polaris Office Installation')
         click_object(target_window, 'Agree and Install', '1025','Button')
 
-        return True
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

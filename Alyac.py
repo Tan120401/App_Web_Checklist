@@ -12,7 +12,7 @@ def Alyac(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -23,13 +23,13 @@ def Alyac(app_name, file_name_exe, download_link):
         click_without_id(target_window, 'µ¿ÀÇ(N)', 'Button')
         click_without_id(target_window, 'µ¿ÀÇ(N)', 'Button')
         click_without_id(target_window, '????', 'Button')
-        sleep(30)
-        # Check app install
-        result = check_program_installed('ALZip')
-        if result:
-            return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed('ALZip')
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = Alyac('Alyac','ALYac25.exe','https://www.avast.com/vi-vn/download-thank-you.php?product=FAV-ONLINE-HP&locale=vi-vn&direct=1')
-print(result)

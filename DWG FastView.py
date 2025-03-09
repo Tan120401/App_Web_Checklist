@@ -14,7 +14,7 @@ def DWG_FastView(app_name, file_name_exe, download_link):
             return result
 
         # Download file
-        file_path = download_exe_file(file_name_exe, download_link, 15)
+        file_path = download_exe_file(file_name_exe, download_link)
         print(file_path)
         if file_path:
             # Install app
@@ -28,9 +28,7 @@ def DWG_FastView(app_name, file_name_exe, download_link):
             result = check_program_installed(app_name)
             if result:
                 return result
-            print('ket qua:', result)
             sleep(5)
     except Exception as e:
         print(f'error install: {e}')
         return False
-DWG_FastView('DWG FastView', 'DWGFastView(KR-1)_x64_1.exe', 'https://dwgfastview-bsyun.dwgfastview.com/Download/KR/8.8/DWGFastView%28KR-1%29_x64_1.exe')

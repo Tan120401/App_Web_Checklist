@@ -1,4 +1,4 @@
-
+from time import sleep
 
 from common_lib import download_by_link, run_file_exe, download_and_execute, check_program_installed, connect_app, \
     click_object
@@ -12,7 +12,7 @@ def Stove(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and excute fail -> return fail
         if not download_result:
@@ -20,12 +20,17 @@ def Stove(app_name, file_name_exe, download_link):
 
         # Connect Stove
         target_window = connect_app('LauncherSetup')
+
         #Click next
         print(target_window.print_control_identifiers())
         click_object(target_window, 'Next', '', 'Button')
-        # sleep(12)
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

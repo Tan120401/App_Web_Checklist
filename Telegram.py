@@ -13,7 +13,7 @@ def Telegram(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 2)
+        download_result = download_and_execute(file_name_exe, download_link, 3)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -32,12 +32,13 @@ def Telegram(app_name, file_name_exe, download_link):
         click_without_id(target_window,'Install', 'Button')
         sleep(20)
         click_without_id(target_window,'Finish', 'Button')
-        # Check app install
-        return True
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Telegram('Telegram', 'tsetup-x64.5.11.1.exe', 'https://telegram.org/dl/desktop/win64')
-print(result)
-
-'https://update.ucwaremobile.com/ucportal/UC_Works_setup.exe'

@@ -13,7 +13,7 @@ def WeChat(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 90, 30)
+        download_result = download_and_execute(file_name_exe, download_link, 30)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -23,11 +23,15 @@ def WeChat(app_name, file_name_exe, download_link):
         target_window = connect_app('WeChat Install Wizard')
         click_without_id(target_window, "I have read and agreed to Terms and Pr'", 'CheckBox')
         click_without_id(target_window, "Install", 'Button')
-        sleep(10)
-        target_window.close()
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                target_window.close()
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

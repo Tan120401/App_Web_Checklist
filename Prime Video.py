@@ -11,7 +11,7 @@ def Prime_Video(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 5, 5)
+        download_result = download_and_execute(file_name_exe, download_link,  5)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -22,10 +22,14 @@ def Prime_Video(app_name, file_name_exe, download_link):
         click_without_id(target_window, 'Install', 'Button')
         sleep(40)
         close_app('Prime Video for Windows')
-        # Check app install
-        return True
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Prime_Video('Prime Video', 'Prime Video for Windows Installer.exe', 'https://get.microsoft.com/installer/download/9P6RC76MSMMJ?hl=en-us&gl=en&referrer=storeforweb&ocid=sfw-fab-control')
-print(result)
+

@@ -21,13 +21,13 @@ def LINE(app_name, file_name_exe, download_link):
         target_window = connect_app('LINE Installer')
         click_object(target_window, '','133', 'CheckBox')
         click_without_id(target_window, 'Install', 'Button')
-        #Wait for download
-        sleep(30)
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = LINE('LINE', 'LineInst.exe', 'https://desktop.line-scdn.net/win/new/LineInst.exe')
-print(result)

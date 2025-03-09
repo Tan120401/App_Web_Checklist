@@ -6,7 +6,7 @@ from pywinauto.findwindows import find_windows
 from common_lib import check_program_installed, print_all_windows, run_file_exe, check_app_installed, \
     check_app_installed_32, check_app_existed
 
-result = check_program_installed('CrossWeb EX')
+result = check_app_existed('Riot Client')
 print(result)
 
 # def IPinsideLWS():
@@ -64,9 +64,9 @@ print(result)
 
 
 # Check app installed
-for i in range(36):
-    result = check_program_installed(app_name)
-    if result:
-        return result
-    sleep(10)
+# for i in range(36):
+#     result = check_program_installed(app_name)
+#     if result:
+#         return result
+#     sleep(10)
 

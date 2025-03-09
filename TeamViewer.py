@@ -12,7 +12,7 @@ def TeamViewer(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -21,12 +21,13 @@ def TeamViewer(app_name, file_name_exe, download_link):
         #Connect app
         target_window = connect_app('TeamViewer Setup')
         click_without_id(target_window,'Accept - next', 'Button')
-        sleep(30)
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = TeamViewer('TeamViewer', 'TeamViewer_Setup_x64.exe', 'https://dl.teamviewer.com/download/version_15x/TeamViewer_Setup_x64.exe?src=cookie-banner&ref=https%3A%2F%2Fwww.teamviewer.com%2Fvi%2F')
-print(result)

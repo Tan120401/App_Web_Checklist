@@ -1,8 +1,7 @@
+from time import sleep
 
-
-from common_lib import run_file_exe, download_and_execute, connect_app, check_program_installed, print_all_windows, \
-    click_object, click_without_id
-
+from common_lib import run_file_exe, download_and_execute, connect_app, check_program_installed, \
+    click_object
 
 def Purple(app_name, file_name_exe, download_link):
     try:
@@ -12,7 +11,7 @@ def Purple(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 30, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and excute fail -> return fail
         if not download_result:
@@ -28,9 +27,12 @@ def Purple(app_name, file_name_exe, download_link):
         sleep(30)
         click_object(target_window, "Finish", "1", "Button")
 
-        #Check installed
-        result = check_program_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

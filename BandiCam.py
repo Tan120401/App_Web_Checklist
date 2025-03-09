@@ -12,7 +12,7 @@ def BandiCam(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -31,11 +31,12 @@ def BandiCam(app_name, file_name_exe, download_link):
         sleep(10)
         click_object(target_window, 'Finish', '1', 'Button')
 
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False
-result = BandiCam('BandiCam','bdcamsetup.exe','https://dl.bandicam.com/bdcamsetup.exe')
-print(result)

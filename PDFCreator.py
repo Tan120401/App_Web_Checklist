@@ -29,6 +29,7 @@ def PDFCreator(app_name, file_name_exe, download_link):
         # Run file exe
         run_file_exe(latest_file)
         sleep(8)
+
         # Connect app
         target_window = connect_app('PDFCreator')
         click_without_id(target_window, '_Install', 'Text')
@@ -37,9 +38,13 @@ def PDFCreator(app_name, file_name_exe, download_link):
         close_app(app_name)
         target_popup = connect_app('PDF Architect 9 Installer')
         click_object(target_popup, 'No', '7','Button')
-        #Check installation
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

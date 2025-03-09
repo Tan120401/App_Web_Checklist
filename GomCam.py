@@ -2,7 +2,6 @@ from time import sleep
 from common_lib import download_directory, connect_app, check_program_installed, \
     download_and_execute, print_all_windows, click_without_id, click_object
 
-
 def GomCam(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
@@ -11,7 +10,7 @@ def GomCam(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -29,10 +28,13 @@ def GomCam(app_name, file_name_exe, download_link):
         click_object(gom_window, 'Install', '1', 'Button')
         sleep(15)
         click_object(gom_window, 'Finish', '1', 'Button')
-        # Check app install
-        result = check_program_installed('알캡처')
 
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed('알캡처')
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error app: {e}')
         return False

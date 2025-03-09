@@ -13,7 +13,7 @@ def Evernote(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 30, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and excute fail -> return fail
         if not download_result:
@@ -24,9 +24,13 @@ def Evernote(app_name, file_name_exe, download_link):
         click_object(target_window, 'I accept the terms in the License Agreement', '1034', 'CheckBox')
         click_object(target_window, 'Next >', '1', 'Button')
         click_object(target_window, 'Install', '1', 'Button')
-        sleep(10)
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

@@ -12,7 +12,7 @@ def Photoscape(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and execute fail -> return fail'
         if not download_result:
@@ -27,11 +27,13 @@ def Photoscape(app_name, file_name_exe, download_link):
         sleep(20)
         click_without_id(target_window, 'Finish', 'Button')
 
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Photoscape('Photoscape', 'PhotoScape 3.4.exe', 'https://www.filehorse.com/download/file/sEqp0V5z8oWNsJ9_ZMWSa0uvz5zCCgScHGgKjT_TVv4Krm0BoXah6S7b5zDNxQIBIEg4qnkBxdjdSMC1ZGjR4Q/')
-print(result)
+

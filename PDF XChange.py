@@ -3,7 +3,7 @@ import zipfile
 from time import sleep
 
 from common_lib import download_and_execute, connect_app, click_object, check_program_installed, download_by_link, \
-    get_latest_file, download_directory, run_file_exe, print_all_windows, click_without_id
+    get_latest_file, download_directory, run_file_exe, print_all_windows, click_without_id, get_link
 
 
 def PDF_XChange(app_name, file_name_exe, download_link):
@@ -12,10 +12,11 @@ def PDF_XChange(app_name, file_name_exe, download_link):
         result = check_program_installed(app_name)
         if result:
             return result
+
         file_path = os.path.join(download_directory, file_name_exe)
         if not os.path.isfile(file_path):
             #Download file zip
-            download_by_link(download_link)
+            get_link(download_link)
             sleep(60)
 
             lastest_file_zip = get_latest_file()
@@ -43,8 +44,13 @@ def PDF_XChange(app_name, file_name_exe, download_link):
         click_object(target_window, 'Install', '1586', 'Button')
         sleep(15)
         click_object(target_window, 'Finish', '1528', 'Button')
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False

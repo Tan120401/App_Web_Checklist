@@ -11,7 +11,7 @@ def Whale(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10, 5)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -20,12 +20,13 @@ def Whale(app_name, file_name_exe, download_link):
         #Conect app
         target_window = connect_app('NAVER Whale Installer')
         click_without_id(target_window, 'Accept and continue', 'Button')
-        sleep(30)
-        # Check app install
-        result = check_program_installed(app_name)
-        return result
+
+        # Check app installed
+        for i in range(24):
+            result = check_program_installed(app_name)
+            if result:
+                return result
+            sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Whale('Whale', 'WhaleSetup.exe', 'https://installer-whale.pstatic.net/downloads/installers/WhaleSetup.exe')
-print(result)
