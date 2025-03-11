@@ -3,8 +3,8 @@ import os
 from time import sleep
 
 from common_lib import download_by_link, run_file_exe, check_program_installed, download_directory, \
-    get_latest_file, connect_app, click_by_xpath, print_all_windows, click_without_id, close_app, get_link
-
+    get_latest_file, connect_app, click_by_xpath, print_all_windows, click_without_id, close_app, get_link, \
+    download_and_execute
 
 def Alpdf(app_name, file_name_exe, download_link):
     try:
@@ -13,25 +13,18 @@ def Alpdf(app_name, file_name_exe, download_link):
         if result:
             return result
 
-        file_path = os.path.join(download_directory, file_name_exe)
-        if not os.path.isfile(file_path):
-            # Download file
-            driver = get_link(download_link)
-            click_by_xpath(driver, '//*[@id="container"]/section/div[1]/div/div[1]/div/div/div[1]/span/a')
-            sleep(90)
-            driver.quit()
+        # Download and execute install file
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
-            # Get latest file
-            file_path = get_latest_file()
-
-        # Run file exe
-        run_file_exe(file_path)
-        sleep(5)
+        # If download and execute fail -> return fail
+        if not download_result:
+            return download_result
 
         #Connect app
         target_window = connect_app('Setup - 알PDF')
         click_without_id(target_window,'Agree(A)', 'Button')
-        sleep(10)
+        sleep(30)
+
         almain_window = connect_app('알매니저')
         click_without_id(almain_window, '설치를 시작합니다.', 'Button')
         sleep(15)
@@ -50,5 +43,4 @@ def Alpdf(app_name, file_name_exe, download_link):
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Alpdf('Alpdf', 'ALPDF403.exe', 'https://altools.co.kr/product/ALPDF')
-print(result)
+Alpdf('Alpdf', 'ALPDF403.exe', 'https://advert.estsoft.com/?event=201601201427327')

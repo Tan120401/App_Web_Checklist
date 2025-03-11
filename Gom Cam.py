@@ -2,7 +2,7 @@ from time import sleep
 from common_lib import download_directory, connect_app, check_program_installed, \
     download_and_execute, print_all_windows, click_without_id, click_object
 
-def GomCam(app_name, file_name_exe, download_link):
+def Gom_Cam(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
         result = check_program_installed(app_name)

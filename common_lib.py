@@ -162,7 +162,7 @@ def download_by_link(link, timeout = 3600):
         print("Đóng trình duyệt Chrome...")
         driver.quit()
 
-# Function download app by link
+# Function get link
 def get_link(link):
     # Xác định thư mục Downloads
     download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -187,7 +187,6 @@ def get_link(link):
 
     driver.get(link)
     return driver
-
 
 # Run file exe
 def run_file_exe(file_path):

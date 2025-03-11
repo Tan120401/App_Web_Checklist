@@ -21,8 +21,10 @@ def AlSee(app_name, file_name_exe, download_link):
             return download_result
 
         # Connect app
+        print_all_windows()
         target_window = connect_app('Setup - 알씨')
         click_without_id(target_window, 'Agree(A)', 'Button')
+        sleep(30)
 
         almain_window = connect_app('알매니저')
         click_without_id(almain_window, '설치를 시작합니다.', 'Button')
@@ -40,3 +42,4 @@ def AlSee(app_name, file_name_exe, download_link):
     except Exception as e:
         print(f'error install: {e}')
         return False
+

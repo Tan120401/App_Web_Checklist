@@ -20,6 +20,14 @@ def Alsong(app_name, file_name_exe, download_link):
         target_window = connect_app('Setup')
         #Click Agree
         click_without_id(target_window, 'Agree(A)', 'Button')
+        sleep(30)
+
+        almain_window = connect_app('알매니저')
+        click_without_id(almain_window, '설치를 시작합니다.', 'Button')
+        sleep(12)
+        click_without_id(almain_window, '제품 실행', 'Button')
+        click_without_id(almain_window, '취소', 'Button')
+        almain_window.close()
 
         # Check app installed
         for i in range(24):

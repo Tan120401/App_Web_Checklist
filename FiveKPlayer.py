@@ -12,7 +12,7 @@ def FiveKPlayer(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 20)
+        download_result = download_and_execute(file_name_exe, download_link, 30)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -22,13 +22,15 @@ def FiveKPlayer(app_name, file_name_exe, download_link):
         target_window = connect_app('5KPlayerinstall')
         install_path = r'Resource/image/5KPlayer/install.png'
         click_object_by_image(install_path, 0.8)
-        sleep(10)
-        target_window.close()
+
+
 
         # Check app installed
         for i in range(24):
-            result = check_program_installed(app_name)
+            result = check_program_installed('5KPlayer')
             if result:
+                sleep(10)
+                target_window.close()
                 return result
             sleep(10)
     except Exception as e:

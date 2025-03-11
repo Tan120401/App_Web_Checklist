@@ -2,12 +2,13 @@ from time import sleep
 
 from common_lib import download_by_link, run_file_exe, check_program_installed, download_and_execute, connect_app, \
     print_all_windows, click_object_by_index, click_object, click_without_id, close_app, check_app_installed, \
-    check_app_installed_32
+    check_app_installed_32, check_app_existed
 
-def DuckDuckGo(app_name, file_name_exe, download_link):
+
+def DuckDuckGo_Browser(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
-        result = check_app_installed_32(app_name)
+        result = check_app_existed('DuckDuckGo')
         if result:
             return result
 
@@ -24,7 +25,7 @@ def DuckDuckGo(app_name, file_name_exe, download_link):
 
         # Check app installed
         for i in range(24):
-            result = check_app_installed_32(app_name)
+            result = check_app_existed('DuckDuckGo')
             if result:
                 return result
             sleep(10)

@@ -123,8 +123,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     # Click start btn
     def on_clicked_start(self):
         # self.clear_table_data()
-        print('app list all', self.app_list_info)
-        print('app list selected', self.app_selected)
         if len(self.app_selected) == 0:
             self.show_notification('Please select test case!')
             self.app_list_info = app_list_data
@@ -192,7 +190,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
     # Change status check
     def onCellChanged(self, row, col):
         if col == 0 and not self.is_selected:
-            print('da vao day')
             item = self.ui.tableResult.item(row, col)
             box_check = item.checkState()
             self.ui.tableResult.blockSignals(True)
@@ -263,8 +260,6 @@ class MainWindow(QMainWindow, Ui_mainWindow):
                     self.ui.tableResult.blockSignals(True)
                     item.setText('')
                     self.ui.tableResult.blockSignals(False)
-                    print(f"Item at row {row}: {item.text()}")
-                    print("Text cleared successfully.")
                 except Exception as e:
                     print(f"Error setting text at row {row}: {e}")
 

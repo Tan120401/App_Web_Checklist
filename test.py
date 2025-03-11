@@ -6,7 +6,7 @@ from pywinauto.findwindows import find_windows
 from common_lib import check_program_installed, print_all_windows, run_file_exe, check_app_installed, \
     check_app_installed_32, check_app_existed
 
-result = check_app_existed('Riot Client')
+result = check_program_installed('5KPlayer')
 print(result)
 
 # def IPinsideLWS():

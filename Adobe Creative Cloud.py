@@ -13,7 +13,7 @@ def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 120)
+        download_result = download_and_execute(file_name_exe, download_link, 10)
 
         # If download and excute fail -> return fail
         if not download_result:
