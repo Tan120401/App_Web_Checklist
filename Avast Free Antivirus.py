@@ -13,7 +13,7 @@ def Avast_Free_Antivirus(app_name, file_name_exe, download_link):
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 20)
 
         # If download and execute fail -> return fail
         if not download_result:

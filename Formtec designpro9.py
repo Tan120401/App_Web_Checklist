@@ -20,13 +20,13 @@ def Formtec_designpro9(app_name, file_name_exe, download_link):
             return download_result
 
         #Connect app
-        target_window = connect_app('Setup')
-        click_without_id(target_window, 'Next', 'Button')
-        click_without_id(target_window, 'Next', 'Button')
-        click_without_id(target_window, 'Accept', 'Button')
-        click_without_id(target_window, 'Accept', 'Button')
-        sleep(30)
-        click_without_id(target_window, 'Finish', 'Button')
+        # target_window = connect_app('Setup')
+        # click_without_id(target_window, 'Next', 'Button')
+        # click_without_id(target_window, 'Next', 'Button')
+        # click_without_id(target_window, 'Accept', 'Button')
+        # click_without_id(target_window, 'Accept', 'Button')
+        # sleep(30)
+        # click_without_id(target_window, 'Finish', 'Button')
 
         #Select language
         language_window = connect_app('Select Setup Language')

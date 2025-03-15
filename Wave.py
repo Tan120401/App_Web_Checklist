@@ -37,13 +37,13 @@ def Wave(app_name, file_name_exe, download_link):
         click_without_id(target_window, 'Next', 'Button')
         click_without_id(target_window, 'Next', 'Button')
         click_without_id(target_window, 'Install', 'Button')
-        sleep(30)
-        click_without_id(target_window, 'Finish', 'Button')
 
         # Check app installed
         for i in range(24):
             result = check_program_installed(app_name)
             if result:
+                sleep(5)
+                click_without_id(target_window, 'Finish', 'Button')
                 return result
             sleep(10)
     except Exception as e:

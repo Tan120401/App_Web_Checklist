@@ -1,13 +1,13 @@
 from time import sleep
 
 from common_lib import download_by_link, run_file_exe, check_program_installed, download_and_execute, connect_app, \
-    print_all_windows, check_app_installed
+    print_all_windows, check_app_installed, check_app_existed, close_app
 
 
-def Bliz(app_name, file_name_exe, download_link):
+def Blitz(app_name, file_name_exe, download_link):
     try:
         #Check app is installed
-        result = check_app_installed(app_name)
+        result = check_app_existed(app_name)
         if result:
             return result
 
@@ -20,8 +20,10 @@ def Bliz(app_name, file_name_exe, download_link):
 
         # Check app installed
         for i in range(24):
-            result = check_app_installed(app_name)
+            result = check_app_existed(app_name)
             if result:
+                sleep(5)
+                close_app('Launch Game ⚡ Blitz')
                 return result
             sleep(10)
     except Exception as e:

@@ -3,7 +3,8 @@ import os
 from time import sleep
 
 from common_lib import download_by_link, run_file_exe, click_by_xpath, download_and_execute, connect_app, click_object, \
-    check_program_installed, download_directory, click_without_id
+    check_program_installed, download_directory, click_without_id, close_app
+
 
 def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
     try:
@@ -32,6 +33,8 @@ def Adobe_Creative_Cloud(app_name, file_name_exe, download_link):
         for i in range(24):
             result = check_program_installed(app_name)
             if result:
+                sleep(10)
+                target_window.close()
                 return result
             sleep(10)
     except Exception as e:

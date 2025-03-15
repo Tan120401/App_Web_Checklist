@@ -4,11 +4,21 @@ from pywinauto import Desktop
 from pywinauto.findwindows import find_windows
 
 from common_lib import check_program_installed, print_all_windows, run_file_exe, check_app_installed, \
-    check_app_installed_32, check_app_existed
+    check_app_installed_32, check_app_existed, connect_app, click_without_id
 
-result = check_program_installed('5KPlayer')
+result = check_program_installed('Formtec Design Pro 9')
 print(result)
-
+# print_all_windows()
+#
+window = connect_app('Setup - Formtec Design Pro 9')
+click_without_id(window, 'I accept the agreement', 'RadioButton')
+click_without_id(window, 'Next', 'Button')
+click_without_id(window, 'Next', 'Button')
+click_without_id(window, 'Next', 'Button')
+click_without_id(window, 'Next', 'Button')
+click_without_id(window, '작업하고 계신 모든 파일을 저장 후, 설치를 진행해주세요.', 'CheckBox')
+click_without_id(window, 'Install', 'Button')
+# print(window.print_control_identifiers())
 # def IPinsideLWS():
 #     try:
 #         result = check_program_installed('IPinside LWS Agent')

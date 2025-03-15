@@ -31,6 +31,8 @@ def Ahnlab_V3_Lite(app_name, file_name_exe, download_link):
         for i in range(24):
             result = check_program_installed(app_name)
             if result:
+                sleep(5)
+                target_window.close()
                 return result
             sleep(10)
     except Exception as e:

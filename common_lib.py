@@ -7,7 +7,7 @@ import winreg
 
 import pyautogui
 from AppOpener import open
-from pywinauto import Application, Desktop
+from pywinauto import Application, Desktop, findwindows
 
 import random
 
@@ -253,9 +253,11 @@ def connect_app(app_name):
     try:
         app = Application(backend='uia').connect(title_re=f'.*{app_name}.*')
         target_window = app.window(title_re=f'.*{app_name}.*')
+        target_window.set_focus()
         return target_window
     except Exception as e:
         print(f'connect app error: {e}')
+        return False
 
 def wait_until(timeout, interval, condition):
     start_time = time.time()
@@ -280,7 +282,9 @@ def click_object(window, title, auto_id, control_type):
 
 # Function click object by image
 def click_object_by_image(file_path, confidence_value  = 0.9):
+    print('da vao day')
     object_select = pyautogui.locateCenterOnScreen(file_path, confidence=confidence_value)
+
     print(object_select)
     try:
         wait_until(5, 1, lambda: object_select)
@@ -333,7 +337,7 @@ def click_without_id(window, title, control_type):
     return result
 
 # Function click object exist
-def click_app_without_id(window, title, control_type):
+def click_app(window, title, control_type):
     object_select = window.child_window(title_re=f'{title}. .*', control_type=control_type)
     try:
         wait_until(5, 1, lambda: object_select.exists())
@@ -345,6 +349,43 @@ def click_app_without_id(window, title, control_type):
     sleep(1)
     return result
 
+
+def click_app_by_index(window, title, control_type, index=0):
+    import re
+
+    # Lấy tất cả các phần tử có control_type đã chỉ định
+    all_elements = window.descendants(control_type=control_type)
+
+    # Tạo mẫu regex
+    pattern = re.compile(f'{re.escape(title)}.*')
+
+    # Lọc các phần tử có tiêu đề khớp với mẫu
+    matching_elements = []
+    for elem in all_elements:
+        try:
+            text = elem.window_text()
+            if pattern.match(text):
+                matching_elements.append(elem)
+        except:
+            continue
+
+    # Kiểm tra nếu có phần tử phù hợp
+    if not matching_elements or index >= len(matching_elements):
+        print(f"Không tìm thấy phần tử với title '{title}' và control_type '{control_type}'")
+        return [False, title, None]
+
+    # Chọn phần tử ở vị trí index
+    object_select = matching_elements[index]
+
+    try:
+        wait_until(5, 1, lambda: object_select)
+        object_select.click_input()
+        result = [True, title, object_select]
+    except TimeoutError as e:
+        print(f'Click error: {e}')
+        result = [False, title, None]
+    sleep(1)
+    return result
 # Function click object exist
 def click_input_without_id(window, title, control_type):
     object_select = window.child_window(title=title, control_type=control_type)
@@ -511,6 +552,7 @@ def download_and_execute(file_name_exe, download_link, time_wait_execute):
         if not os.path.isfile(file_path):
             #Down load thông qua link
             download_by_link(download_link)
+            file_path = get_latest_file()
 
         # Hàm kiểm tra xem nếu đã tồn tại file cài đặt thì run nó
         run_file_exe(file_path)
@@ -573,7 +615,12 @@ def base_install_by_microsoft_store(app_name):
     sleep(3)
 
     #Select the searched app
-    click_app_without_id(target_window, app_name, 'Button')
+    if app_name == 'TikTok' or app_name == 'Discord' or app_name == 'Sway':
+        click_app_by_index(target_window, app_name, 'Button')
+    elif app_name == 'Pinterest':
+        click_app(target_window, 'Microsoft Store Awards 2024. Pinterest', 'Button')
+    else:
+        click_app(target_window, app_name, 'Button')
     sleep(2)
 
     #Click install or get
@@ -589,3 +636,6 @@ def base_install_by_microsoft_store(app_name):
         disable_install = target_window.child_window(auto_id="InstalledActionDisabled", control_type="Button")
         if open_button.exists() or disable_install.exists():
             return True
+
+result = base_install_by_microsoft_store('Windows Notepad')
+print(result)

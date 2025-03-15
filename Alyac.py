@@ -7,12 +7,12 @@ from common_lib import download_directory, connect_app, check_program_installed,
 def Alyac(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
-        result = check_program_installed('ALZip')
+        result = check_program_installed('¾Ë¾à')
         if result:
             return result
 
         # Download and execute install file
-        download_result = download_and_execute(file_name_exe, download_link, 10)
+        download_result = download_and_execute(file_name_exe, download_link, 5)
 
         # If download and execute fail -> return fail
         if not download_result:
@@ -26,10 +26,10 @@ def Alyac(app_name, file_name_exe, download_link):
 
         # Check app installed
         for i in range(24):
-            result = check_program_installed('ALZip')
+            result = check_program_installed('¾Ë¾à')
             if result:
                 return result
-            sleep(10)
+            sleep(5)
     except Exception as e:
         print(f'error app: {e}')
         return False
