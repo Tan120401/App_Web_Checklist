@@ -563,7 +563,7 @@ def download_and_execute(file_name_exe, download_link, time_wait_execute):
         return False
 
 # Download and run file install
-def install_app(file_path, handle):
+def install_app_by_cmd(file_path, handle):
     try:
         # Đường dẫn đến tệp thực thi
         if os.path.isfile(file_path):
@@ -639,3 +639,193 @@ def base_install_by_microsoft_store(app_name):
 
 result = base_install_by_microsoft_store('Windows Notepad')
 print(result)
+
+#ba.dao
+
+def make_folder_log(folder_path):
+    # Kiểm tra và tạo thư mục nếu chưa tồn tại
+    os.makedirs(folder_path, exist_ok=True)
+    print(f"Thư mục đã được tạo tại: {folder_path}")
+
+def download_app(download_folder, download_link):
+    try:
+        if any((f.lower().endswith('.exe') or f.lower().endswith('.msi') or f.lower().endswith('.zip'))  and os.path.isfile(
+                os.path.join(download_folder, f)) for f in os.listdir(download_folder)):
+            print("Thư mục chứa file.")
+
+            return True
+        download_to_folder(download_link,download_folder,360)
+
+        # Kiểm tra xem thư mục có chứa file không
+        if any((f.lower().endswith('.exe') or f.lower().endswith('.msi') or f.lower().endswith('.zip')) and os.path.isfile(os.path.join(download_folder, f)) for f in os.listdir(download_folder)):
+            print("Thư mục chứa file.")
+            return True
+        else:
+            print("Thư mục không chứa file.")
+            return False
+
+    except Exception as e:
+        print(f'Download and run error: {e}')
+        return False
+
+# Function download app by link
+def download_to_folder(link,download_folder,wait_time):
+    # Tạo tùy chọn cho Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument('--ignore-ssl-errors')
+    # Cấu hình bỏ qua xác nhận người dùng, tự động down load về folder down load
+    prefs = {"download.default_directory": download_folder,
+             "download.prompt_for_download": False,  # Chrome sẽ không hiện cửa sổ xác nhận trước khi tải xuống tệp.
+             "profile.default_content_setting_values.automatic_downloads": 1,
+             # cho phép tải xuống tự động mà không bị chặn.
+             "safebrowsing.enabled": True}  # kích hoạt tính năng Bảo mật An toàn (Safe Browsing) của Chrome
+    chrome_options.add_experimental_option("prefs", prefs)
+
+    # Khởi tạo trình điều khiển cho Chrome
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+    # Mở một trang web
+    driver.get(link)
+    for i in range(wait_time):
+        # Kiểm tra xem thư mục có chứa file không
+        # if any(f.lower().endswith('.exe') and os.path.isfile(os.path.join(download_folder, f)) for f in
+        #        os.listdir(download_folder)):
+        if any((f.endswith('.exe') or f.endswith('.msi')) and os.path.isfile(
+                             os.path.join(download_folder, f)) for f in os.listdir(download_folder)):
+            print("File download successfully")
+            driver.quit()
+            sleep(1)
+            return True
+        sleep(10)
+    else:
+        print("File download not successfully")
+        driver.quit()
+        return False
+
+def find_installed_program(program_name_to_find):
+    # Define the registry keys for 64-bit and 32-bit programs
+    reg_paths = [
+        r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",  # For 64-bit
+        r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"  # For 32-bit on 64-bit systems
+    ]
+
+    for reg_path in reg_paths:
+        try:
+            # Open the registry key
+            reg_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path)
+
+            # Iterate through the keys
+            for i in range(0, winreg.QueryInfoKey(reg_key)[0]):
+                subkey_name = winreg.EnumKey(reg_key, i)
+                subkey = winreg.OpenKey(reg_key, subkey_name)
+
+                try:
+                    # Try to fetch the DisplayName value (program name)
+                    program_name, _ = winreg.QueryValueEx(subkey, "DisplayName")
+
+                    # Check if the program name matches the one we're searching for
+                    if program_name_to_find.lower() in program_name.lower():
+                        return True,program_name
+                except FileNotFoundError:
+                    pass
+                finally:
+                    winreg.CloseKey(subkey)
+            winreg.CloseKey(reg_key)
+        except FileNotFoundError:
+            pass
+
+    # If we finish the loop without finding the program, return False
+    return False,program_name_to_find
+
+def install_app(command, sleep_time):
+    # Run the command in normal mode
+    subprocess.Popen(command, shell=True)
+    sleep(sleep_time)  # Adding sleep if needed for timing
+
+def install_msi(msi_path,command):
+    try:
+        # Define the msiexec command with arguments
+        # command = [
+        #     "msiexec",
+        #     "/i", msi_path,  # /i for installation
+        #     "/quiet",  # Silent install
+        #     "/norestart"  # Prevent restart after installation
+        # ]
+
+        # Run the command using subprocess
+        subprocess.run(command, check=True)
+        print("Installation completed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error during installation: {e}")
+    except FileNotFoundError:
+        print("msiexec is not found. Make sure you're running on a Windows system.")
+
+def click_object_2(window, title=None, auto_id=None, control_type=None,found_index=0):
+    """
+    Click vào nút (button) trong cửa sổ ứng dụng.
+
+    :param window: Đối tượng cửa sổ ứng dụng.
+    :param title: Tiêu đề của nút (button).
+    :param auto_id: ID tự động của phần tử.
+    :param control_type: Loại điều khiển (ví dụ: 'Button').
+    """
+
+    # Tạo từ điển các tham số để tìm kiếm
+    search_params = {}
+    if title is not None:
+        search_params['title'] = title
+    if auto_id is not None:
+        search_params['auto_id'] = auto_id
+    if control_type is not None:
+        search_params['control_type'] = control_type
+    search_params['found_index'] = found_index
+
+    # Tìm button với các tham số tìm kiếm
+    button = window.child_window(**search_params)
+
+    # Nếu tìm thấy button, click vào nó
+    if button.exists(timeout=5):
+        button.click_input()
+        sleep(1)
+    else:
+        print(f"Không tìm thấy button với các tham số đã cho.{title}{auto_id}{control_type}")
+
+def get_all_child(window,class_name=None,auto_id=None):
+    child_list =[]
+    def list_all_children(window):
+        children = window.children()  # Get all child controls
+        for child in children:
+            print(child.class_name())
+            if (class_name and child.class_name() == class_name) or (auto_id and child.automation_id() == auto_id) or (not class_name and not auto_id):
+                child_list.append(child)  # Add child to the list
+            # Recursively list child windows of the current child (if any)
+            list_all_children(child)
+
+    list_all_children(window)
+    return child_list
+def get_all_child_obj(window,class_name=None,auto_id=None):
+    child_list =[]
+    def list_all_children(window):
+        children = window.children()  # Get all child controls
+        for child in children:
+            if (class_name and child.class_name() == class_name) or (auto_id and child.automation_id() == auto_id) or (not class_name and not auto_id):
+                child_list.append(child)  # Add child to the list
+            # Recursively list child windows of the current child (if any)
+            list_all_children(child)
+
+    list_all_children(window)
+    return child_list
+def click_object_by_name(window_title, name, control_type):
+    try:
+        cp_window = Application(backend='uia').connect(title_re=window_title)
+        window = cp_window.window(title_re=window_title)
+        button_region = window.child_window(title_re=name, control_type=control_type)
+        if button_region.exists(timeout=5):
+            button_region.click_input()
+            sleep(1)
+    except Exception as e:
+        print(e)
+        print(f'button name {name} not found')
+        return True

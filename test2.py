@@ -1,35 +1,159 @@
-import os
-from time import sleep
-from common_lib import download_directory, connect_app, check_program_installed, \
-    download_and_execute, print_all_windows, click_without_id, click_object, download_by_link, click_by_xpath, \
-    get_latest_file, run_file_exe, download_exe_file, install_app, check_app_existed
+data = [
+    ['Ahnlab Safe Transaction', 'astxdn.exe', 'https://bank.shinhan.com/sw/astx/astxdn.exe'],
+    ['Adobe Acrobat Reader', 'readerdc64_ga_cra_install.exe', 'https://admdownload.adobe.com/rdcm/installers/live/readerdc64_ga_cra_install.exe'],
+    ['Adobe Creative Cloud', 'Creative_Cloud_Set-Up.exe', 'https://prod-rel-ffc-ccm.oobesaas.adobe.com/adobe-ffc-external/core/v1/wam/download?sapCode=KCCC&productName=Creative%20Cloud&os=win&guid=d8738952-724a-4ffa-b844-ae8af08d8259&contextParams=%7B%22component%22%3A%22cc-home%22%2C%22visitor_guid%22%3A%2217544139162251472000750151510417531777%22%2C%22campaign_id%22%3A%2245274%7C92568%7C96659%7C2021-10-cme-1%7C2023-09-apps-catalog-M2%22%2C%22browser%22%3A%22chrome%22%2C%22context_guid%22%3A%227d3c1f19-9cdc-4e58-92fc-6c0f2350c3bd%22%2C%22variation_id%22%3A%22130841%3A45274%7C287164%3A92568%7C299138%3A96659%7Ctest%3A2021-10-cme-1%7Ctest%3A2023-09-apps-catalog-M2%22%2C%22experience_id%22%3A%22na%3A45274%7Cna%3A92568%7Cna%3A96659%7Cna%3A2021-10-cme-1%7Cna%3A2023-09-apps-catalog-M2%22%2C%22planCodeList%22%3A%22cc_free%7Cdc_free%22%2C%22updateCCD%22%3A%22true%22%2C%22secondarySapcodeList%22%3A%22%22%2C%22Product_ID_Promoted%22%3A%22KCCC%22%2C%22userGuid%22%3A%22198278505EBCAAC20A495FB4%40AdobeID%22%2C%22authId%22%3A%22198278505EBCAAC20A495FB4%40AdobeID%22%2C%22contextComName%22%3A%22Organic%3ACCH%22%2C%22contextSvcName%22%3A%22NO-CCD%22%2C%22contextOrigin%22%3A%22Organic%3ACCH%22%2C%22AMCV_D6FAAFAD54CA9F560A4C98A5%2540AdobeOrg%22%3A%22-637568504%257CMCIDTS%257C20144%257CMCMID%257C17544139162251472000750151510417531777%257CMCAAMLH-1741061086%257C3%257CMCAAMB-1741061086%257C6G1ynYcLPuiQxYZrsz_pkqfLG9yMXBpb2zX5dvJdYQJzPXImdj0y%257CMCOPTOUT-1740463486s%257CNONE%257CMCSYNCSOP%257C411-20147%257CvVersion%257C5.1.1%22%2C%22mid%22%3A%2222233660565938630591820048530096679807%22%2C%22aid%22%3A%22%22%2C%22AppMeasurementVersion%22%3A%222.23.0%22%2C%22kaizenTrialDuration%22%3A7%7D&wamFeature=nuj-live&environment=prod&api_key=CCHomeWeb1'],
+    ['APS Engine', 'APS_Engine.exe', 'https://mybank.ibk.co.kr/IBK/uib/sw/yettiesoft/APS/APS_Engine.exe'],
+    ['CrossWeb EX', 'INIS_EX_SHA2.exe', 'https://bank.shinhan.com/sw/initech/extension/down/INIS_EX_SHA2.exe?ver=1.0.1.961'],
+    ['Wizin Delfino G3', 'delfino-g3-sha2.exe', 'https://mybank.ibk.co.kr/IBK/uib/sw/wizvera/delfino/down/delfino-g3-sha2.exe'],
+    ['IPinsideLWS', 'I3GSvcManager.exe', 'https://mybank.ibk.co.kr/IBK/uib/sw/interezen/agent/I3GSvcManager.exe'],
+    ['Printmade', 'Printmade3_setup.exe', 'https://bank.shinhan.com/sw/printmade/download_files/Windows/Printmade3_setup.exe'],
+    ['TouchEnNxKey', 'TouchEn_nxKey_32bit.exe', 'https://bank.shinhan.com/sw/raon/TouchEn/nxKey/module/TouchEn_nxKey_32bit.exe?ver=1.0.0.8'],
+    ['Bandizip', 'BANDIZIP-SETUP-STD-X64.EXE', 'https://kr.bandisoft.com/bandizip/dl.php?web'],
+    ['Gom Audio', 'GOMAUDIOGLOBALSETUP_NEW.EXE', 'https://cdn2.gomlab.com/gretech/audio/GOMAUDIOGLOBALSETUP_NEW.EXE'],
+    ['Alsong', 'ALSong353.exe', 'https://advert.estsoft.com/?event=200803271705239'],
+    ['Melon Player', 'MelonSetup.exe', 'https://cdnstatic.melon.co.kr/svc/pcp/apps/w10/MelonSetup.exe'],
+    ['Dropbox', 'DropboxInstaller.exe', 'https://dl-web.dropbox.com/installer?arch=x86_64&authenticode_sign=True&build_no=218.4.4348&juno=True&juno_use_program_files=True&omaha=True&omaha_use_program_files=True&plat=win&tag=eyJUQUdTIjoiZUp5clZpcE9MUzdPek0tTHoweFJzbEl3TlRFeE1qSXl0ekN4TkRNM05UQTB0REEwTVRJek1EUTFNalcyTkRRMU1ESTBOTFUwTnFvRkFKc1VEWFV-QE1FVEEifQ&tag_token=AgSUCkxdvsAaMv3mTcZhPII-gCEHcXYf7IqCPIGb8yzwdA'],
+    ['Evernote', 'Evernote-latest.exe', 'https://win.desktop.evernote.com/builds/Evernote-latest.exe'],
+    ['Google Drive', 'GoogleDriveSetup.exe', 'https://dl.google.com/drive-file-stream/GoogleDriveSetup.exe'],
+    ['OneDrive', 'OneDriveSetup.exe', 'https://go.microsoft.com/fwlink/p/?LinkID=2182910&clcid=0x412&culture=ko-kr&country=kr'],
+    ['EA app', 'EAappInstaller.exe', 'https://origin-a.akamaihd.net/EA-Desktop-Client-Download/installer-releases/EAappInstaller.exe'],
+    ['Battlenet', 'Battle.net-Setup.exe', 'https://www.blizzard.com/download/confirmation?product=bnetdesk'],
+    ['Albion online', 'albion-online-setup.exe', 'https://live.albiononline.com/clients/20250214110215/albion-online-setup.exe'],
+    ['nProtect Online Security', 'nos_setup.exe', 'https://supdate.nprotect.net/nprotect/nos_service/windows/install/nos_setup.exe'],
+    ['Purple', 'PurpleInstaller_2_25_212_6.exe', 'https://gs-purple-inst.download.ncupdate.com/Purple/PurpleInstaller_2_25_212_6.exe'],
+    ['Genshin Impact', 'GenshinImpact_install_ua_3f1192c7d78b.exe', 'https://sg-public-api.hoyoverse.com/event/download_porter/trace/ys_global/genshinimpactpc/default?url=https%3A%2F%2Fgenshin.hoyoverse.com%2Fko%2Fhome&appid=525'],
+    ['GOOSE GOOSE DUCK', 'Goose Goose Duck Installer 3.14.01 release.exe', 'https://gaggle.fun/goose-goose-duck'],
+    ['PorkerStarts', 'PokerStarsInstall.exe', 'https://download.pokerstars.com/poker/client/download/'],
+    ['Rocket_League', 'EpicInstaller-18.0.0.msi', 'https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi'],
+    ['World of Tanks', 'world_of_tanks_install_asia_d7xwpwyusv1x.exe', 'https://redirect.wargaming.net/WoT/latest_web_install_asia'],
+    ['World of Warships', 'world_of_warships_ww_install_asia_d7xwxhtjontu.exe', 'https://wds.wargaming.net/wgc/releases_tTrHgLCKHBRiaL/wgc_24.08.02.8277_asia/world_of_warships_ww_install_asia.exe?sid=SIDHqNAIQCeD_VPqE14lFlbFSTvTeDty7bOXWfcS-MJAsFvu_d8W7m-if8zOjqqofNxS14iJ2Kmy6OUV1qmlgfZXVmajwBtkVJAoP2GXHJ4gsYiqfX2POOtRNfIWHcHO662ZZoNqFJa3d_Ylg&enctid=d7xwxhtjontu&lpsn=WoWs+direct+WGC+download+ASIA&foris=1&teclient=1740119043985793231&utm_source=wg_web_site&utm_medium=organic&utm_campaign=y3dwj24l&utm_content=unknown'],
+    ['Autodesk Access', 'AdAccess-installer.exe', 'https://emsfs.autodesk.com/utility/access/1/installer/latest/AdAccess-installer.exe'],
+    ['PDFCreator', 'PDFCreator-5_3_3-Setup.exe', 'https://www.pdfforge.org/pdfcreator/download'],
+    ['Polaris Office', 'PolarisOfficeSetup.exe', 'https://www.polarisoffice.com/en/download'],
+    ['Alpdf', 'ALPDF403.exe', 'https://advert.estsoft.com/?event=201601201427327'],
+    ['Blitz', 'Blitz-2.1.275.exe','https://blitz.gg/download/win'],
+    ['Riot Games', 'Install League of Legends sg2.exe', 'https://lol.secure.dyn.riotcdn.net/channels/public/x/installer/current/live.sg2.exe'],
+    ['Wondershare pdfelement', 'pdfelement-pro_setup_full5239.exe', 'https://download.wondershare.com/pdfelement-pro_full5239.exe?_gl=1*15dl66l*_ga*OTQ2NTk5MDE3LjE3NDAzNjE2MzQ.*_ga_24WTSJBD5B*MTc0MDM2MTYzMy4xLjAuMTc0MDM2MTYzNS42MC4wLjE2NDIwNDk4NQ..*_gcl_au*MTc0MTcxMjM3MC4xNzQwMzYxNjM2'],
+    ['PDF-XChange Editor', 'PDFXVE10.exe',"https://www.pdf-xchange.de/DL/tracker10/editor-zip-tracker.php"],
+    ['BANDIVIEW', 'BANDIVIEW-SETUP-X64.EXE', 'https://www.bandisoft.com/bandiview/dl.php?web'],
+    ['AlSee', 'ALSee936.exe', 'https://advert.estsoft.com/?event=200803271565808'],
+    # ['DWG FastView', 'DWGFastView(KR-1)_x64_1.exe', 'https://dwgfastview-bsyun.dwgfastview.com/Download/KR/8.8/DWGFastView%28KR-1%29_x64_1.exe'],
+    ['Alcapture', 'ALCapture318.exe', 'https://advert.estsoft.com/?event=201110311523647'],
+    ['GOM Cam', 'GOMCAM2024SETUP_NEW.EXE', 'https://cdn2.gomlab.com/gretech/gomcam/GOMCAM2024SETUP_NEW.EXE'],
+    ['oCam','oCam_v550.0.exe','https://ohsoft.net/update/download.php'],
+    ['Ahnlab V3 Lite','V3_Lite_Setup.exe','https://provide.ahnlab.com/v3lite/v40/download/V3_Lite_Setup.exe'],
+    ['CCleaner','ccsetup633.exe','https://www.ccleaner.com/ccleaner/download/standard'],
+    ['Alyac','ALYac25.exe','https://cdn1.estsecurity.com/setup/ALYac/ALYac25.exe'],
+    ['GOM Player Plus', 'GOMPLAYERPLUS2024SETUP_NEW.EXE','https://cdn2.gomlab.com/gretech/gomplayerplus/GOMPLAYERPLUS2024SETUP_NEW.EXE'],
+    ['KMPlayer', 'KMPlayer_4.2.3.21.exe', 'https://www.kmplayer.com/home#layer-pc'],
+    ['KMPlayer 64X', 'KMP64_2025.1.21.12.exe', 'https://www.kmplayer.com/home#layer-pc'],
+    ['Kollus Player', 'KollusAgent-3.1.1.1.r5.exe', 'https://v.kr.kollus.com/pc_player_install/agent?cpk=megastudyedu'],
+    ['PotPlayer', 'PotPlayerSetup64.exe', 'https://t1.kakaocdn.net/potplayer/PotPlayer/Version/Latest/PotPlayerSetup64.exe'],
+    ['VLC Media Player', 'vlc-3.0.21-win64.exe', 'https://www.videolan.org/vlc/'],
+    ['Prime Video', 'Prime Video for Windows Installer.exe', 'https://get.microsoft.com/installer/download/9P6RC76MSMMJ?hl=en-us&gl=en&referrer=storeforweb&ocid=sfw-fab-control'],
+    ['LINE', 'LineInst.exe', 'https://desktop.line-scdn.net/win/new/LineInst.exe'],
+    ['Zoom', 'ZoomInstallerFull.exe', 'https://zoom.us/download'],
+    ['DuckDuckGo Browser', 'DuckDuckGo.appinstaller', 'https://duckduckgo.com/windows'],
+    ['Opera', 'OperaSetup.exe', 'https://www.opera.com/computer/thanks?ni=stable&os=windows'],
+    ['Vivaldi', 'Vivaldi.7.1.3570.58.x64.exe', 'https://vivaldi.com'],
+    ['Whale', 'WhaleSetup.exe', 'https://installer-whale.pstatic.net/downloads/installers/WhaleSetup.exe'],
+    ['GoToMeeting', 'GoToMeeting Opener.exe', 'https://meet.servers.getgo.com/opener/e30.eyJpYXQiOjE3NDA5NzgzMDQsImxhdW5jaFBhcmFtcyI6eyJidWlsZCI6IjE5OTUwIiwidGVsZW1ldHJ5VVJMIjoiaHR0cHM6Ly9sYXVuY2hzdGF0dXMuZ2V0Z28uY29tL2xhdW5jaGVyMi90ZWxlbWV0cnkvaGVscGVyP3Rva2VuPWcybS1yOXFpdnB1ZjVzcnN5dWIxeWRya2pnLWIxOTk1MC1zY2xzSW5zdGFsbF82ODQwNWJkZV9hZjU5XzQxNDZfODgyYV8xNDI2YjU2NzljZjQiLCJlbmRwb2ludFBhcmFtcyI6eyJQcm9kdWN0IjoiZzJtIiwic2Vzc2lvblRyYWNraW5nSWQiOiJjbHNJbnN0YWxsLTY4NDA1YmRlLWFmNTktNDE0Ni04ODJhLTE0MjZiNTY3OWNmNCIsImxhdW5jaFVybCI6Im1lZXRpbmc_c2Vzc2lvblRyYWNraW5nSWQ9Y2xzSW5zdGFsbC02ODQwNWJkZS1hZjU5LTQxNDYtODgyYS0xNDI2YjU2NzljZjQmY2xpZW50R2VuZXJhdGlvbj1yb2xsaW5nIiwiZW52IjoibGl2ZSJ9fSwidmVyc2lvbiI6IjEuMCIsImZsb3dUeXBlIjoiaW5zdGFsbCIsImVuZHBvaW50Rmxhdm9yIjp7ImZsYXZvciI6Im5ldXRyb24iLCJmbGF2b3JFbmZvcmNlZCI6InRydWUifSwiaXNGbGF2b3JGaW5hbCI6dHJ1ZX0.e30'],
+    ['Wave', 'Wave Browser.exe', 'https://wavebrowser.com/'],
+    ['QQ', 'QQ_9.9.17_250110_x64_01.exe', 'https://im.qq.com/pcqq/index.shtml'],
+    ['TeamViewer', 'TeamViewer_Setup_x64.exe', 'https://dl.teamviewer.com/download/version_15x/TeamViewer_Setup_x64.exe?src=cookie-banner&ref=https%3A%2F%2Fwww.teamviewer.com%2Fvi%2F'],
+    ['Telegram', 'tsetup-x64.5.11.1.exe', 'https://telegram.org/dl/desktop/win64'],
+    ['UCWorks', 'UC_Works_setup.exe', 'https://update.ucwaremobile.com/ucportal/UC_Works_setup.exe'],
+    ['WeChat', 'WeChatSetup.exe', 'https://dldir1v6.qq.com/weixin/Windows/WeChatSetup.exe'],
+    ['Clip Studio', 'CSP_323w_setup.exe', 'https://www.clipstudio.net/en/purchase/complete_win/'],
+    ['FL Studio', 'flstudio_win64_24.2.2.4597.exe', 'https://support.image-line.com/redirect/flstudio_win_installer?_gl=1*g4ilmg*_gcl_au*NTcxNjY4OTM3LjE3NDA5OTQ1NTg.'],
+    ['Photoscape', 'PhotoScape 3.4.exe', 'https://www.filehorse.com/download/file/sEqp0V5z8oWNsJ9_ZMWSa0uvz5zCCgScHGgKjT_TVv4Krm0BoXah6S7b5zDNxQIBIEg4qnkBxdjdSMC1ZGjR4Q/'],
+    ['Vegas Pro', 'trial_vegaspro22_dlm_je96k4.exe', 'https://dl03.vegascreativesoftware.com/trial_vegaspro22_dlm_je96k4.exe'],
+    ['Wondershare', 'filmora_setup_full6119.exe', 'https://download.wondershare.kr/filmora_full6119.exe'],
+    ['FiveKPlayer','5kplayer-setup.exe','https://www.5kplayer.com/download/5kplayer-setup.exe'],
+    ['AVG Antivirus Free','avg_antivirus_free_setup.exe','https://www.avg.com/en-us/download-thank-you.php?product=FREEGSR-FAD#pc'],
+    ['Turbo Vaccine','TVIS_R3_M.exe','https://www.turbovaccine.com/TVIS_R3_M.exe'],
+    ['Avast Free Antivirus','thiết_lập_Avast_Free_Antivirus_trực_tuyến.exe','https://www.avast.com/vi-vn/download-thank-you.php?product=FAV-ONLINE-HP&locale=vi-vn&direct=1'],
+    ['Avast Secure Browser', 'avast_secure_browser_setup.exe', 'https://www.softonic.kr/download-launch?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb3dubG9hZFR5cGUiOiJleHRlcm5hbERvd25sb2FkIiwiZG93bmxvYWRVcmwiOiJodHRwczovL2Nkbi1kb3dubG9hZC5hdmFzdGJyb3dzZXIuY29tL3NvZnRvbmljL2F2YXN0X3NlY3VyZV9icm93c2VyX3NldHVwLmV4ZSIsImFwcElkIjoiYTlhMjJlMzgtYTRkNC0xMWU2LTg5NGMtMDAxNjNlZDgzM2U3IiwicGxhdGZvcm1JZCI6IndpbmRvd3MiLCJpYXQiOjE3NDA5NzI0OTcsImV4cCI6MTc0MDk3NjA5N30.dTKBLZf0jWOD2mnKKuEqTHqA1EoEVMre2qPRZgDmHxY'],
+    ['Goclean','gocleansetup152.exe','https://www.gobest.kr/goclean_app/index.htm'],
+    ['VirtualDJ', '', 'Microsoft Store'],
+    ['Epic Games Store', '', 'Microsoft Store'],
+    ['Angry Birds 2', '', 'Microsoft Store'],
+    ['Asphalt 8: Airborne', '', 'Microsoft Store'],
+    ['Naval Armada: Sea Battle Online', '', 'Microsoft Store'],
+    ['Candy Crush Saga', '', 'Microsoft Store'],
+    ['Despicable Me: Minion Rush', '', 'Microsoft Store'],
+    ['Hidden City: Hidden Object Adventure', '', 'Microsoft Store'],
+    ['Homescapes', '', 'Microsoft Store'],
+    ['Microsoft Jigsaw', '', 'Microsoft Store'],
+    ['Microsoft Mahjong', '', 'Microsoft Store'],
+    ['Microsoft Minesweeper', '', 'Microsoft Store'],
+    ['Microsoft Solitaire Collection', '', 'Microsoft Store'],
+    ['Microsoft Sudoku', '', 'Microsoft Store'],
+    ['Minecraft Education', '', 'Microsoft Store'],
+    ['SpongeBob: Krusty Cook-Off', '', 'Microsoft Store'],
+    ['Township', '', 'Microsoft Store'],
+    ['Microsoft Sticky Notes', '', 'Microsoft Store'],
+    ['Citrix Workspace App', '', 'Microsoft Store'],
+    ['Microsoft copilot 365', '', 'Microsoft Store'],
+    ['Power BI Desktop', '', 'Microsoft Store'],
+    ['WPS Office UWP', '', 'Microsoft Store'],
+    ['Snipping Tool', '', 'Microsoft Store'],
+    ['GOM Player - Free Video Player', '', 'Microsoft Store'],
+    ['VLC UWP', '', 'Microsoft Store'],
+    ['KakaoTalk', '', 'Microsoft Store'],
+    ['Microsoft Teams', '', 'Microsoft Store'],
+    ['Skype', '', 'Microsoft Store'],
+    ['WhatsApp', '', 'Microsoft Store'],
+    ['Brave Browser', '', 'Microsoft Store'],
+    ['Mozilla Firefox', '', 'Microsoft Store'],
+    ['Discord', '', 'Microsoft Store'],
+    ['Audacity', '', 'Microsoft Store'],
+    ['Paint', '', 'Microsoft Store'],
+    ['Netflix', '', 'Microsoft Store'],
+    ['Spirality', '', 'Microsoft Store'],
+    ['Pulse Secure', '', 'Microsoft Store'],
+    ['Amazon Music', '', 'Microsoft Store'],
+    ['Microsoft Clipchamp', '', 'Microsoft Store'],
+    ['iTunes', '', 'Microsoft Store'],
+    ['Spotify - Music and Podcasts', '', 'Microsoft Store'],
+    ['Wondershare Filmora - AI Video Editor', '', 'Microsoft Store'],
+    ['Canva', '', 'Microsoft Store'],
+    ['Lively Wallpaper', '', 'Microsoft Store'],
+    ['TranslucentTB', '', 'Microsoft Store'],
+    ['Windows Scan', '', 'Microsoft Store'],
+    ['iCloud', '', 'Microsoft Store'],
+    ['Inkscape', '', 'Microsoft Store'],
+    ['Mail', '', 'Microsoft Store'],
+    ['OneNote', '', 'Microsoft Store'],
+    ['Neat Office - DOCX & PDF Editor', '', 'Microsoft Store'],
+    ['Slack', '', 'Microsoft Store'],
+    ['Trio Office: DOCX & XLSX Editor', '', 'Microsoft Store'],
+    ['Messenger', '', 'Microsoft Store'],
+    ['Pinterest', '', 'Microsoft Store'],
+    ['Viber', '', 'Microsoft Store'],
+    ['Intel® Graphics Command Center', '', 'Microsoft Store'],
+    ['HP Smart', '', 'Microsoft Store'],
+    ['Snippet', '', 'Microsoft Store'],
+    ['Sway', '', 'Microsoft Store'],
+    ['Windows Calculator', '', 'Microsoft Store'],
+    ['Windows Scan', '', 'Microsoft Store'],
+    ['PhotoScape X', '', 'Microsoft Store'],
+    ['Microsoft To Do: Lists, Tasks & Reminders', '', 'Microsoft Store'],
+    ['BreeZip: RAR & ZIP Extractor', '', 'Microsoft Store'],
+    ['Drawboard PDF - PDF Reader & PDF Editor', '', 'Microsoft Store'],
+    ['Cooking Fever', '', 'Microsoft Store'],
+    ['Dragon Mania Legends', '', 'Microsoft Store'],
+    ['OP Auto Clicker', '', 'Microsoft Store'],
+    ['Microsoft PowerToys', '', 'Microsoft Store'],
+    ['TikTok', '', 'Microsoft Store'],
+    ['Phone Link', '', 'Microsoft Store'],
+    ['Windows Notepad', '', 'Microsoft Store'],
+    ['Feedback Hub', '', 'Microsoft Store'],
+    ['Windows Clock', '', 'Microsoft Store'],
+    ['Windows Calculator', '', 'Microsoft Store'],
+    ['Microsoft 365 Copilot', '', 'Microsoft Store'],
+]
 
+app_list_data = sorted(data, key=lambda x: x[0])
 
-def test1(app_name, file_name_exe, download_link):
-    try:
-        # Check app is installed
-        result = check_program_installed(app_name)
-        if result:
-            return result
-
-        # Download file
-        file_path = download_exe_file(file_name_exe, download_link, 60)
-        if file_path:
-            # Install app
-            install_app(file_path, "/S")
-        else:
-            print('Time out')
-            return False
-
-        # Check app installed
-        for i in range(24):
-            result = check_program_installed(app_name)
-            if result:
-                return result
-            print('ket qua:', result)
-            sleep(10)
-    except Exception as e:
-        print(f'error app: {e}')
-        return False
-result = test1('APS Engine', 'APS_Engine.exe', 'https://mybank.ibk.co.kr/IBK/uib/sw/yettiesoft/APS/APS_Engine.exe')
-print(result)
+print(len(app_list_data))

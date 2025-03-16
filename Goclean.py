@@ -2,7 +2,7 @@ import os
 from time import sleep
 from common_lib import download_directory, connect_app, check_program_installed, \
     download_and_execute, print_all_windows, click_without_id, click_object, download_by_link, click_by_xpath, \
-    get_latest_file, run_file_exe, install_app, get_link
+    get_latest_file, run_file_exe, install_app_by_cmd, get_link
 
 
 def Goclean(app_name, file_name_exe, download_link):
@@ -28,7 +28,7 @@ def Goclean(app_name, file_name_exe, download_link):
 
 
         #Install app
-        install_app(file_path, "/S")
+        install_app_by_cmd(file_path, "/S")
 
         # Check app installed
         for i in range(24):

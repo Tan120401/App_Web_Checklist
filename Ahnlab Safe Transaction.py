@@ -4,7 +4,7 @@ from time import sleep
 from win32cryptcon import szOID_CMC_LRA_POP_WITNESS
 
 from common_lib import download_by_link, run_file_exe, download_directory, connect_app, \
-    click_object, check_program_installed, download_exe_file, install_app, download_and_execute, print_all_windows, \
+    click_object, check_program_installed, download_exe_file, install_app_by_cmd, download_and_execute, print_all_windows, \
     click_without_id
 
 

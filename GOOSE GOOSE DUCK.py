@@ -3,7 +3,7 @@ import os
 from time import sleep
 
 from common_lib import download_by_link, check_program_installed, download_and_execute, connect_app, \
-    click_by_xpath, get_latest_file, run_file_exe, click_without_id
+    click_by_xpath, get_latest_file, run_file_exe, click_without_id, get_link
 
 
 def GOOSE_GOOSE_DUCK(app_name, file_name_exe, link):
@@ -14,7 +14,7 @@ def GOOSE_GOOSE_DUCK(app_name, file_name_exe, link):
             return result
 
         #Download and execute install file
-        driver = download_by_link(link)
+        driver = get_link(link)
 
         sleep(10)
 

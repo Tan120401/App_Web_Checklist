@@ -3,7 +3,7 @@ import os
 from time import sleep
 
 from common_lib import download_by_link, run_file_exe, download_directory, connect_app, click_object, \
-    check_program_installed, download_and_execute, download_exe_file, install_app
+    check_program_installed, download_and_execute, download_exe_file, install_app_by_cmd
 
 
 def CrossWeb_EX(app_name, file_name_exe, download_link):
@@ -17,7 +17,7 @@ def CrossWeb_EX(app_name, file_name_exe, download_link):
         file_path = download_exe_file(file_name_exe, download_link)
         if file_path:
             # Install app
-            install_app(file_path, "/S")
+            install_app_by_cmd(file_path, "/S")
         else:
             print('Time out')
             return False

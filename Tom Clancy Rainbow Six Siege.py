@@ -1,21 +1,17 @@
-import os
-
 from time import sleep
 
-from common_lib import download_by_link, run_file_exe, check_program_installed, connect_app, download_and_execute, \
-    download_exe_file, install_app_by_cmd
+from common_lib import check_program_installed, download_exe_file, install_app_by_cmd
 
 
-def DWG_FastView(app_name, file_name_exe, download_link):
+def Tom_Clancy_Rainbow_Six_Siege(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
-        result = check_program_installed(app_name)
+        result = check_program_installed('Ubisoft Connect')
         if result:
             return result
 
         # Download file
         file_path = download_exe_file(file_name_exe, download_link)
-        print(file_path)
         if file_path:
             # Install app
             install_app_by_cmd(file_path, "/S")
@@ -25,10 +21,11 @@ def DWG_FastView(app_name, file_name_exe, download_link):
 
         # Check app installed
         for i in range(24):
-            result = check_program_installed(app_name)
+            result = check_program_installed('Ubisoft Connect')
+            print('dang check')
             if result:
                 return result
-            sleep(5)
+            sleep(10)
     except Exception as e:
-        print(f'error install: {e}')
+        print(f'error app: {e}')
         return False

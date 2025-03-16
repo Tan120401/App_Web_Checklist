@@ -1,6 +1,6 @@
 from time import sleep
 
-from common_lib import check_program_installed, download_exe_file, install_app
+from common_lib import check_program_installed, download_exe_file, install_app_by_cmd
 
 def APS_Engine(app_name, file_name_exe, download_link):
     try:
@@ -13,7 +13,7 @@ def APS_Engine(app_name, file_name_exe, download_link):
         file_path = download_exe_file(file_name_exe, download_link)
         if file_path:
             # Install app
-            install_app(file_path, "/S")
+            install_app_by_cmd(file_path, "/S")
         else:
             print('Time out')
             return False

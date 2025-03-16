@@ -4,7 +4,7 @@ from time import sleep
 
 
 from common_lib import download_by_link, run_file_exe, check_program_installed, download_and_execute, connect_app, \
-    print_all_windows, click_without_id, download_exe_file, install_app, click_object_by_image, close_app
+    print_all_windows, click_without_id, download_exe_file, install_app_by_cmd, click_object_by_image, close_app
 
 def Wondershare_pdfelement(app_name, file_name_exe, download_link):
     try:
