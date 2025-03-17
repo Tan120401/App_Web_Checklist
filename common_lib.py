@@ -637,9 +637,6 @@ def base_install_by_microsoft_store(app_name):
         if open_button.exists() or disable_install.exists():
             return True
 
-result = base_install_by_microsoft_store('Windows Notepad')
-print(result)
-
 #ba.dao
 
 def make_folder_log(folder_path):

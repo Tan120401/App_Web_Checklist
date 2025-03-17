@@ -23,6 +23,8 @@ def Goclean(app_name, file_name_exe, download_link):
 
             # Wait for download
             sleep(10)
+            driver.quit()
+
             # Get latest file
             file_path = get_latest_file()
 

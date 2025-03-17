@@ -21,6 +21,7 @@ def Zoom(app_name, file_name_exe, download_link):
             click_by_xpath(driver, '//*[@id="app"]/div/div/div/div[2]/div[2]/div[2]/a[1]')
             #Wait for download
             sleep(30)
+            driver.quit()
             # Get latest file
             file_path = get_latest_file()
 

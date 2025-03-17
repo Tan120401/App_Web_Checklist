@@ -21,10 +21,10 @@ def GOOSE_GOOSE_DUCK(app_name, file_name_exe, link):
         #Click download
         click_by_xpath(driver, '/html/body/app-root/div/div/app-goose-goose-duck/app-ggd-main/section[2]/div/div/div/div/div[3]/div[1]/div[1]/a')
         sleep(150)
+        driver.quit()
 
         #Get latest file
         latest_file = get_latest_file()
-
         #Run file exe
         run_file_exe(latest_file)
 

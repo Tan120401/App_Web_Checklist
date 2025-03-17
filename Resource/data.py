@@ -78,10 +78,11 @@ data = [
     ['Avast Secure Browser', 'avast_secure_browser_setup.exe', 'https://www.softonic.kr/download-launch?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb3dubG9hZFR5cGUiOiJleHRlcm5hbERvd25sb2FkIiwiZG93bmxvYWRVcmwiOiJodHRwczovL2Nkbi1kb3dubG9hZC5hdmFzdGJyb3dzZXIuY29tL3NvZnRvbmljL2F2YXN0X3NlY3VyZV9icm93c2VyX3NldHVwLmV4ZSIsImFwcElkIjoiYTlhMjJlMzgtYTRkNC0xMWU2LTg5NGMtMDAxNjNlZDgzM2U3IiwicGxhdGZvcm1JZCI6IndpbmRvd3MiLCJpYXQiOjE3NDA5NzI0OTcsImV4cCI6MTc0MDk3NjA5N30.dTKBLZf0jWOD2mnKKuEqTHqA1EoEVMre2qPRZgDmHxY'],
     ['Goclean','gocleansetup152.exe','https://www.gobest.kr/goclean_app/index.htm'],
     ['Rockstar Games Launcher', 'Rockstar-Games-Launcher.exe', 'https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe?_gl=1*tyd6fv*_gcl_au*MjQzNTIzNjk3LjE3NDIxMzM0Mjc.*_ga*MjM0NjIzMzA4LjE3NDIxMzM0MDU.*_ga_PJQ2JYZDQC*MTc0MjEzMzQwNC4xLjEuMTc0MjEzMzQ0MS4wLjAuMA..'],
-    ['Tom_Clancy_Rainbow_Six_Siege', 'UbisoftConnectInstaller.exe', 'https://static3.cdn.ubi.com/orbit/launcher_installer/UbisoftConnectInstaller.exe'],
+    ['Tom Clancy Rainbow Six Siege', 'UbisoftConnectInstaller.exe', 'https://static3.cdn.ubi.com/orbit/launcher_installer/UbisoftConnectInstaller.exe'],
     ['Google Chrome', 'ChromeSetup.exe', 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B2EE99883-F8F0-300A-4491-387A047F9582%7D%26lang%3Dvi%26browser%3D4%26usagestats%3D1%26appname%3DGoogle%2520Chrome%26needsadmin%3Dprefers%26ap%3Dx64-statsdef_1%26installdataindex%3Dempty/update2/installers/ChromeSetup.exe'],
     ['Microsoft Edge', 'MicrosoftEdgeSetup.exe', 'https://c2rsetup.officeapps.live.com/c2r/downloadEdge.aspx?platform=Default&source=EdgeStablePage&Channel=Stable&language=vi&brand=M100'],
     ['BAND', 'BAND-1.10.13.exe', 'https://www.band.us/cs/notice/1301'],
+    ['Formtec Design Pro 9', 'DesignPro_9_Setup_UP9.exe', 'https://download.formtec.co.kr/download/DesignPro_9_Setup_UP9.exe'],
     ['VirtualDJ', '', 'Microsoft Store'],
     ['Epic Games Store', '', 'Microsoft Store'],
     ['Angry Birds 2', '', 'Microsoft Store'],
@@ -164,9 +165,8 @@ data = [
 ]
 
 
-
 # data = [
-#     ['alrimi','alrimi_setup.exe','https://comci.kr/download/ilgwa/alrimi_setup.exe'],
+#     ['Comtime Noti','alrimi_setup.exe','https://comci.kr/download/ilgwa/alrimi_setup.exe'],
 #     ['CalendarTask','xdiarys-setup-v3.exe','https://download.xdiarys.com/windows/xdiarys-setup-v3.exe'],
 #     ['EditPlus','epp600_0632_64bit.exe','https://www.editplus.com/ftp/epp600_0632_64bit.exe'],
 #     ['ezPDF Editor','ezPDFEditor_Personal_Setup_3.0.8.4.exe','https://www.unidocs.co.kr/data/ezpdfeditor/personal/ezPDFEditor_Personal_Setup_3.0.8.4.exe'],
@@ -183,7 +183,7 @@ data = [
 #     ['OpenOffice','','https://sourceforge.net/projects/openofficeorg.mirror/files/latest/download'],
 #     ['NetBeans','','https://dlcdn.apache.org/netbeans/netbeans-installers/25/Apache-NetBeans-25-bin-windows-x64.exe'],
 #     ['OP GG','','https://op.gg/desktop/download/latest'],
-#     ['Plus','','https://new.real.download.dws.co.kr/download/eFriendPlus_setup.exe'],
+#     ['Korean Investment HTS','','https://new.real.download.dws.co.kr/download/eFriendPlus_setup.exe'],
 #     ['Java','','https://javadl.oracle.com/webapps/download/AutoDL?BundleId=251656_7ed26d28139143f38c58992680c214a5'],
 #     ['Altools','','https://advert.estsoft.com/?event=200910145916818'],
 #     ['Avast Cleanup','','https://www.avast.com/download-thank-you.php?product=FAV-ONLINE-STORE&amp;locale=en-ww&amp;direct=1'],

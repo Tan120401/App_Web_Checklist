@@ -16,8 +16,7 @@ def PDF_XChange(app_name, file_name_exe, download_link):
         file_path = os.path.join(download_directory, file_name_exe)
         if not os.path.isfile(file_path):
             #Download file zip
-            get_link(download_link)
-            sleep(60)
+            download_by_link(download_link)
 
             lastest_file_zip = get_latest_file()
 

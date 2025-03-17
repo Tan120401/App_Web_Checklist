@@ -20,7 +20,7 @@ def oCam(app_name, file_name_exe, download_link):
             # Click Download
             click_by_xpath(driver, '/html/body/table[2]/tbody/tr[1]/td[3]/button')
             sleep(10)
-
+            driver.quit()
             file_path = get_latest_file()
         run_file_exe(file_path)
 

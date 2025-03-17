@@ -21,6 +21,8 @@ def VLC_Media_Player(app_name, file_name_exe, download_link):
             click_by_xpath(driver, '//*[@id="downloadButton2"]')
             #Wait for download
             sleep(20)
+            driver.quit()
+
             # Get latest file
             file_path = get_latest_file()
 

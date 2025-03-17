@@ -19,29 +19,30 @@ def Formtec_designpro9(app_name, file_name_exe, download_link):
         if not download_result:
             return download_result
 
-        #Connect app
-        # target_window = connect_app('Setup')
-        # click_without_id(target_window, 'Next', 'Button')
-        # click_without_id(target_window, 'Next', 'Button')
-        # click_without_id(target_window, 'Accept', 'Button')
-        # click_without_id(target_window, 'Accept', 'Button')
-        # sleep(30)
-        # click_without_id(target_window, 'Finish', 'Button')
-
         #Select language
         language_window = connect_app('Select Setup Language')
         click_without_id(language_window, 'OK', 'Button')
-        target_window = connect_app('Setup')
-        click_without_id(target_window, 'Yes', 'Button')
+
+        target_window = connect_app('Setup - Formtec Design Pro 9')
+        click_without_id(target_window, 'I accept the agreement', 'RadioButton')
+        click_without_id(target_window, 'Next', 'Button')
+        click_without_id(target_window, 'Next', 'Button')
+        click_without_id(target_window, 'Next', 'Button')
+        click_without_id(target_window, 'Next', 'Button')
+
+        click_without_id(target_window, '작업하고 계신 모든 파일을 저장 후, 설치를 진행해주세요.', 'CheckBox')
+        click_without_id(target_window, 'Install', 'Button')
+
 
         # Check app installed
         for i in range(24):
             result = check_program_installed(app_name)
             if result:
+                sleep(5)
+                target_window.close()
                 return result
             sleep(10)
     except Exception as e:
         print(f'error install: {e}')
         return False
-result = Formtec_designpro9('Formtec designpro9', 'DesignPro_9_Setup_UP9.exe', 'https://download.formtec.co.kr/download/DesignPro_9_Setup_UP9.exe')
-print(result)
+

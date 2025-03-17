@@ -7,7 +7,7 @@ from common_lib import check_program_installed, download_exe_file, install_app_b
 def BAND(app_name, file_name_exe, download_link):
     try:
         # Check app is installed
-        result = check_program_installed(app_name)
+        result = check_program_installed('BAND APP')
         if result:
             return result
 

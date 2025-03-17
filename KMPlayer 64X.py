@@ -25,6 +25,8 @@ def KMPlayer_64X(app_name, file_name_exe, download_link):
             click_by_xpath(driver, '//*[@id="layer2"]/div/div[1]/div[1]/div[2]/div[2]/div[2]/a[2]')
             #Wait for download
             sleep(10)
+
+            driver.quit()
             # Get latest file
             file_path = get_latest_file()
 

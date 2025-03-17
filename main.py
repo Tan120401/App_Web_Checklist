@@ -1,5 +1,4 @@
 import importlib
-import os
 import sys
 
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
